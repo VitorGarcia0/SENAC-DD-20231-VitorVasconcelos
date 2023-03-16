@@ -72,8 +72,8 @@ public class Telefone {
 	}
 	@Override
 	public String toString() {
-		return "Telefone [id=" + id + ", idCliente=" + idCliente + ", ddd=" + ddd + ", numero=" + numero + ", ativo="
-				+ ativo + ", movel=" + movel + "]";
+		return "Telefone id: " + id + ", idCliente = " + idCliente + ", ddd = " + ddd + ", numero = " + numero + ", ativo = "
+				+ ativo + ", movel = " + movel;
 	}
 	
 	
