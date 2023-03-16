@@ -8,10 +8,9 @@ public class Telefone {
 	private boolean ativo;
 	private boolean movel;
 	
-	public Telefone(Integer id, Integer idCliente, String ddd, String numero, boolean ativo, boolean movel) {
+	public Telefone(Integer id, String ddd, String numero, boolean ativo, boolean movel) {
 		super();
 		this.id = id;
-		this.idCliente = idCliente;
 		this.ddd = ddd;
 		this.numero = numero;
 		this.ativo = ativo;
