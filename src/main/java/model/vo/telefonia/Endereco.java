@@ -4,34 +4,33 @@ public class Endereco {
 	
 	//Atributos
 	private Integer id;
-	private String rua;
 	private String cep;
+	private String rua;
 	private String numero;
 	private String bairro;
 	private String cidade;
 	private String estado;
 	
-	public Endereco(String rua, String cep, String numero, String bairro, String cidade, String estado) {
+	public Endereco(String cep, String rua,  String numero, String bairro, String cidade, String estado) {
 		super();
-		this.rua = rua;
 		this.cep = cep;
+		this.rua = rua;
 		this.numero = numero;
 		this.bairro = bairro;
 		this.cidade = cidade;
 		this.estado = estado;
 	}
 
-	public Endereco(Integer id, String rua, String cep, String numero, String bairro, String cidade, String estado) {
+	public Endereco(Integer id, String cep,  String rua, String numero, String bairro, String cidade, String estado) {
 		super();
 		this.id = id;
-		this.rua = rua;
 		this.cep = cep;
+		this.rua = rua;
 		this.numero = numero;
 		this.bairro = bairro;
 		this.cidade = cidade;
 		this.estado = estado;
 	}
-
 
 
 	public Endereco() {

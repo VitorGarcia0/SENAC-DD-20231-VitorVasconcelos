@@ -7,19 +7,50 @@ public class ExecutavelTelefonia {
 
 	public static void main(String[] args) {
 		
-		Endereco endereco1 = new Endereco("Mauro Ramos", "88000123", "10", "Centro", "Florianopolis", "SC");		
+		Endereco endereco1 = new Endereco("88000123", "Mauro Ramos",  "10", "Centro", "Florianopolis", "SC");		
 		//nome, cpf, telefone, ativo, endereco (CLIENTES)
 		
-		EnderecoDAO novoEndereco = new EnderecoDAO();	
-		novoEndereco.inserir(endereco1);
+		EnderecoDAO dbaDeEnderecos = new EnderecoDAO();
 		
-		if(endereco1.getId() != null) {
-			System.out.println("Novo endereço cadastrado");
-			
-		} else {
-			System.out.println("Erro ao cadastrar endereço");
-			
+		if(dbaDeEnderecos.excluir(9)) {
+			System.out.println("Endereço foi excluído");
+		}else {
+			System.out.println("Erro ao excluir endereço");
 		}
+		
+//	EnderecoDAO dbaDeEnderecos = new EnderecoDAO();	
+//		dbaDeEnderecos.inserir(endereco1);
+//		
+//		Endereco endereco2 = new Endereco("88004321", "Nereu Ramos",  "20", "Centro", "Florianopolis", "SC");
+//		
+//		dbaDeEnderecos.inserir(endereco2);
+//		
+//		if(endereco1.getId() != null) {
+//			System.out.println("Novo endereço cadastrado");
+//			
+//		} else {
+//			System.out.println("Erro ao cadastrar endereço");
+//			
+//		}
+//		
+//		Endereco enderecoQueJaExiste = dbaDeEnderecos.consultarPorId(2);
+//		
+//		System.out.println(enderecoQueJaExiste);
+//		enderecoQueJaExiste.setRua("Rua sem Fim");
+//		boolean atualizou = dbaDeEnderecos.atualizar(enderecoQueJaExiste);
+//		enderecoQueJaExiste = dbaDeEnderecos.consultarPorId(2);
+//		
+//		if(atualizou) {
+//			System.out.println("Endereço foi atualizado ");
+//		} else {
+//			System.out.println("Erro ao atualizar endereço");
+//		}
+//		
+//		System.out.println(enderecoQueJaExiste);
+		
+		
+		
+		
 //		Telefone telefone1 = new Telefone("48", "912345678", true, true);
 //		
 //		
