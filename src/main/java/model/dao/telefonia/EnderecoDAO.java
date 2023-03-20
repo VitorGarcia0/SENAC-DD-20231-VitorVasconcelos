@@ -18,8 +18,7 @@ public class EnderecoDAO {
 	 * Insere um novo endereco no banco
 	 * @param novoEndereco o endereco a ser persistido
 	 * @return o endereço inserido com a chave primária gerada
-	 */
-	
+	 */	
 	public Endereco inserir(Endereco novoEndereco) {
 		//CONECTAR AO BANCO
 		Connection conexao = Banco.getConnection();
@@ -67,7 +66,6 @@ public class EnderecoDAO {
 				+ " BAIRRO = ?, CIDADE = ?, ESTADO = ? "
 				+ " WHERE ID = ?";
 		
-		
 		PreparedStatement query = Banco.getPreparedStatement(conexao, sql);
 		try {
 		query.setString(1, enderecoEditado.getCep());
@@ -93,41 +91,12 @@ public class EnderecoDAO {
 		return atualizou;
 	}
 	
-	public Endereco consultarPorId(int id) {
-		Endereco enderecoConsultado = null;
-		Connection conexao = Banco.getConnection();
-		String sql = " SELECT * FROM ENDERECO "
-				+ " WHERE ID = ?";
-		
-		PreparedStatement query = Banco.getPreparedStatement(conexao, sql);
-		try {
-			query.setInt(1, id);
-			ResultSet resultado = query.executeQuery();  //Conjuntos de Resultados
-			if(resultado.next()) {
-				enderecoConsultado = new Endereco();
-				enderecoConsultado.setId(resultado.getInt("id"));
-				enderecoConsultado.setCep(resultado.getString("cep"));
-				enderecoConsultado.setRua(resultado.getString("rua"));
-				enderecoConsultado.setBairro(resultado.getString("bairro"));
-				enderecoConsultado.setNumero(resultado.getString("numero"));
-				enderecoConsultado.setCidade(resultado.getString("cidade"));
-				enderecoConsultado.setEstado(resultado.getString("estado"));
-			}		
-			
-		} catch(SQLException e) {
-			System.out.println("Erro ao buscar endereço do id: " + id
-					+ "\nCausa: " + e.getMessage());
-		}
-		return enderecoConsultado;
-	}
-	
 	public boolean excluir(int id) {
 		boolean excluiu = false;
 		Connection conexao = Banco.getConnection();
 		String sql = " DELETE FROM ENDERECO "
 				+ " WHERE ID = ?";
-		
-		
+			
 		PreparedStatement query = Banco.getPreparedStatement(conexao, sql);
 		try {
 			query.setInt(1, id);
@@ -145,7 +114,32 @@ public class EnderecoDAO {
 		return excluiu;
 	}
 	
+	public Endereco consultarPorId(int id) {
+		Endereco enderecoConsultado = null;
+		Connection conexao = Banco.getConnection();
+		String sql = " SELECT * FROM ENDERECO "
+				+ " WHERE ID = ?";
+		
+		PreparedStatement query = Banco.getPreparedStatement(conexao, sql);
+		try {
+			query.setInt(1, id);
+			ResultSet resultado = query.executeQuery();  //Conjuntos de Resultados
+			if(resultado.next()) {
+				enderecoConsultado = converterDeResultSerParaEntidade(resultado);
+			}		
+			
+		} catch(SQLException e) {
+			System.out.println("Erro ao buscar endereço com id: " + id
+					+ "\nCausa: " + e.getMessage());
+		} finally {
+			Banco.closePreparedStatement(query);
+			Banco.closeConnection(conexao);
+		}
+		return enderecoConsultado;
+	}
+	
 	public List<Endereco> consultarTodos() {
+		Endereco enderecoConsultado = new Endereco();
 		Connection conexao = Banco.getConnection();
 		String sql = " SELECT * FROM ENDERECO ";
 		
@@ -153,28 +147,34 @@ public class EnderecoDAO {
 		List<Endereco> enderecos = new ArrayList<Endereco>();
 		try {
 			ResultSet resultado = query.executeQuery();  //Conjuntos de Resultados
-			while(resultado.next()) {
-				Endereco enderecoConsultado = new Endereco();
-				enderecoConsultado.setId(resultado.getInt("id"));
-				enderecoConsultado.setCep(resultado.getString("cep"));
-				enderecoConsultado.setRua(resultado.getString("rua"));
-				enderecoConsultado.setBairro(resultado.getString("bairro"));
-				enderecoConsultado.setNumero(resultado.getString("numero"));
-				enderecoConsultado.setCidade(resultado.getString("cidade"));
-				enderecoConsultado.setEstado(resultado.getString("estado"));
-				
+			while(resultado.next()) {		
+				enderecoConsultado = converterDeResultSerParaEntidade(resultado);				
 				enderecos.add(enderecoConsultado);
-			}
-
-		
-							
-			
+			}												
 		} catch(SQLException e) {
-			System.out.println("Erro ao buscar os endereços "
+			System.out.println("Erro ao buscar todos os endereços "
 					+ "\nCausa: " + e.getMessage());
+		} finally {
+			Banco.closePreparedStatement(query);
+			Banco.closeConnection(conexao);
 		}
-		return enderecos;
 		
+		return enderecos;	
 	}
+	
+	
+	private Endereco converterDeResultSerParaEntidade(ResultSet resultado) throws SQLException {
+		Endereco enderecoConsultado = new Endereco();
+		enderecoConsultado.setId(resultado.getInt("id"));
+		enderecoConsultado.setCep(resultado.getString("cep"));
+		enderecoConsultado.setRua(resultado.getString("rua"));
+		enderecoConsultado.setBairro(resultado.getString("bairro"));
+		enderecoConsultado.setNumero(resultado.getString("numero"));
+		enderecoConsultado.setCidade(resultado.getString("cidade"));
+		enderecoConsultado.setEstado(resultado.getString("estado"));
+		return enderecoConsultado;
+	}
+	
+	
 	
 }

@@ -4,8 +4,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import model.Banco;
+import model.vo.telefonia.Cliente;
+import model.vo.telefonia.Endereco;
 import model.vo.telefonia.Telefone;
 
 public class TelefoneDAO {
@@ -88,7 +92,7 @@ public class TelefoneDAO {
 	}
 	
 	public Telefone consultarPorId(int id) {
-		Telefone telefoneConsultado = null;
+		Telefone telefoneConsultado = new Telefone();
 		Connection conexao = Banco.getConnection();
 		String sql = " SELECT * FROM TELEFONE "
 				+ " WHERE ID = ?";
@@ -98,14 +102,7 @@ public class TelefoneDAO {
 			query.setInt(1, id);
 			ResultSet resultado = query.executeQuery();  //Conjuntos de Resultados
 			if(resultado.next()) {
-				telefoneConsultado = new Telefone();
-				telefoneConsultado.setId(resultado.getInt("id"));
-				telefoneConsultado.setIdCliente(resultado.getInt("idCliente"));
-				telefoneConsultado.setDdd(resultado.getString("ddd"));
-				telefoneConsultado.setNumero(resultado.getString("numero"));
-				telefoneConsultado.setAtivo(resultado.getBoolean("ativo"));
-				telefoneConsultado.setMovel(resultado.getBoolean("movel"));
-			
+				telefoneConsultado = converterDeResultSerParaEntidade(resultado);				
 			}		
 			
 		} catch(SQLException e) {
@@ -113,6 +110,30 @@ public class TelefoneDAO {
 					+ "\nCausa: " + e.getMessage());
 		}
 		return telefoneConsultado;
+	}
+	
+	public List<Telefone> consultarTodos() {
+		Telefone telefoneConsultado = new Telefone();
+		Connection conexao = Banco.getConnection();
+		String sql = " SELECT * FROM TELEFONE ";
+		
+		PreparedStatement query = Banco.getPreparedStatement(conexao, sql);
+		List<Telefone> telefones = new ArrayList<Telefone>();
+		try {
+			ResultSet resultado = query.executeQuery();  //Conjuntos de Resultados
+			while(resultado.next()) {		
+				telefoneConsultado = converterDeResultSerParaEntidade(resultado);				
+				telefones.add(telefoneConsultado);
+			}												
+		} catch(SQLException e) {
+			System.out.println("Erro ao buscar todos os telefones "
+					+ "\nCausa: " + e.getMessage());
+		} finally {
+			Banco.closePreparedStatement(query);
+			Banco.closeConnection(conexao);
+		}
+		
+		return telefones;	
 	}
 	
 	public boolean excluir(int id) {
@@ -138,9 +159,46 @@ public class TelefoneDAO {
 		}
 		return excluiu;
 	}
+	
+	
+	
+	private Telefone converterDeResultSerParaEntidade(ResultSet resultado) throws SQLException {
+		Telefone telefoneConsultado = new Telefone();
+		telefoneConsultado.setId(resultado.getInt("id"));
+		telefoneConsultado.setIdCliente(resultado.getInt("idCliente"));
+		telefoneConsultado.setDdd(resultado.getString("ddd"));
+		telefoneConsultado.setNumero(resultado.getString("numero"));
+		telefoneConsultado.setAtivo(resultado.getBoolean("ativo"));
+		telefoneConsultado.setMovel(resultado.getBoolean("movel"));
+		return telefoneConsultado;
+	}
 
-	
-	
+	public List<Telefone> consultarPorIdCliente(Integer id) {
+		List<Telefone> telefones = new ArrayList<Telefone>();
+		Connection conexao = Banco.getConnection();
+		String sql = " SELECT * FROM TELEFONE "
+				+ " WHERE ID_CLIENTE = ? ";
+		
+		PreparedStatement query = Banco.getPreparedStatement(conexao, sql);
+		
+		try {
+			query.setInt(1, id);
+			ResultSet resultado = query.executeQuery();  //Conjuntos de Resultados
+			while(resultado.next()) {	
+				Telefone telefoneConsultado = converterDeResultSerParaEntidade(resultado);
+				telefones.add(telefoneConsultado);
+			}												
+		} catch(SQLException e) {
+			System.out.println("Erro ao buscar todos os telefones do cliente informado "
+					+ "\nCausa: " + e.getMessage());
+		} finally {
+			Banco.closePreparedStatement(query);
+			Banco.closeConnection(conexao);
+		}
+		
+		return telefones;	
+	}
+
 	
 	
 	

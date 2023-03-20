@@ -3,6 +3,7 @@ package executavel;
 import java.util.ArrayList;
 import java.util.List;
 
+import model.dao.telefonia.ClienteDAO;
 import model.dao.telefonia.EnderecoDAO;
 import model.dao.telefonia.TelefoneDAO;
 import model.vo.telefonia.Cliente;
@@ -13,10 +14,22 @@ public class ExecutavelTelefonia {
 
 	public static void main(String[] args) {
 		
+		ClienteDAO clienteDAO = new ClienteDAO();
+		
+		
+		
+		
+		EnderecoDAO dbaDeEnderecos = new EnderecoDAO();
+		
+		List<Endereco> enderecos = dbaDeEnderecos.consultarTodos();
+		
+		System.out.println("========== Lista de Endereços ==========");
+		
+		
 //		Endereco endereco1 = new Endereco("88000123", "Mauro Ramos",  "10", "Centro", "Florianopolis", "SC");		
 //		//nome, cpf, telefone, ativo, endereco (CLIENTES)
 //		
-//		EnderecoDAO dbaDeEnderecos = new EnderecoDAO();
+//		
 //		
 //		if(dbaDeEnderecos.excluir(9)) {
 //			System.out.println("Endereço foi excluído");
@@ -24,7 +37,7 @@ public class ExecutavelTelefonia {
 //			System.out.println("Erro ao excluir endereço");
 //		}
 //		
-//	EnderecoDAO dbaDeEnderecos = new EnderecoDAO();	
+//	//EnderecoDAO dbaDeEnderecos = new EnderecoDAO();	
 //		dbaDeEnderecos.inserir(endereco1);
 //		
 //		Endereco endereco2 = new Endereco("88004321", "Nereu Ramos",  "20", "Centro", "Florianopolis", "SC");
@@ -38,7 +51,7 @@ public class ExecutavelTelefonia {
 //			System.out.println("Erro ao cadastrar endereço");
 //			
 //		}
-//		
+		
 //		Endereco enderecoQueJaExiste = dbaDeEnderecos.consultarPorId(2);
 //		
 //		System.out.println(enderecoQueJaExiste);
@@ -72,8 +85,8 @@ public class ExecutavelTelefonia {
 
 		//		List<Telefone> telefonesDoSocrates = new ArrayList<Telefone>();
 //		
-		Telefone telefone1 = new Telefone(1, "48", "32328888", true, false);
-		System.out.println(telefone1);
+//		Telefone telefone1 = new Telefone(1, "48", "32328888", true, false);
+//		System.out.println(telefone1);
 //		telefonesDoSocrates.add(telefone1);
 //		telefonesDoSocrates.add(new Telefone(2, "48", "98881234", true, true));
 	
