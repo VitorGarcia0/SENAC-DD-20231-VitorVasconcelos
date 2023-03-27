@@ -6,9 +6,9 @@ import java.util.List;
 import model.dao.telefonia.ClienteDAO;
 import model.dao.telefonia.EnderecoDAO;
 import model.dao.telefonia.TelefoneDAO;
-import model.vo.telefonia.Cliente;
-import model.vo.telefonia.Endereco;
-import model.vo.telefonia.Telefone;
+import model.vo.telefonia.ClienteVO;
+import model.vo.telefonia.EnderecoVO;
+import model.vo.telefonia.TelefoneVO;
 
 public class ExecutavelTelefonia {
 
@@ -21,7 +21,7 @@ public class ExecutavelTelefonia {
 		
 		EnderecoDAO dbaDeEnderecos = new EnderecoDAO();
 		
-		List<Endereco> enderecos = dbaDeEnderecos.consultarTodos();
+		List<EnderecoVO> enderecos = dbaDeEnderecos.consultarTodos();
 		
 		System.out.println("========== Lista de Endereços ==========");
 		

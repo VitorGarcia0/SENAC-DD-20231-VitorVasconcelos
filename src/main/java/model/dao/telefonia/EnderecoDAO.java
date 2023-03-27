@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import model.Banco;
-import model.vo.telefonia.Endereco;
+import model.vo.telefonia.EnderecoVO;
 
 public class EnderecoDAO {
 	//INSERT 
@@ -19,7 +19,7 @@ public class EnderecoDAO {
 	 * @param novoEndereco o endereco a ser persistido
 	 * @return o endereço inserido com a chave primária gerada
 	 */	
-	public Endereco inserir(Endereco novoEndereco) {
+	public EnderecoVO inserir(EnderecoVO novoEndereco) {
 		//CONECTAR AO BANCO
 		Connection conexao = Banco.getConnection();
 		String sql = " INSERT INTO ENDERECO (RUA, CEP, BAIRRO, "
@@ -58,7 +58,7 @@ public class EnderecoDAO {
 	//SET CEP = ?, RUA = ?, NUMERO = ?, BAIRRO = ?, 
 	//CIDADE = ?, ESTADO = ?
 	// WHERE ID = ?
-	public boolean atualizar(Endereco enderecoEditado) { 
+	public boolean atualizar(EnderecoVO enderecoEditado) { 
 		boolean atualizou = false;
 		Connection conexao = Banco.getConnection();
 		String sql = " UPDATE ENDERECO "
@@ -114,8 +114,8 @@ public class EnderecoDAO {
 		return excluiu;
 	}
 	
-	public Endereco consultarPorId(int id) {
-		Endereco enderecoConsultado = null;
+	public EnderecoVO consultarPorId(int id) {
+		EnderecoVO enderecoConsultado = null;
 		Connection conexao = Banco.getConnection();
 		String sql = " SELECT * FROM ENDERECO "
 				+ " WHERE ID = ?";
@@ -138,13 +138,13 @@ public class EnderecoDAO {
 		return enderecoConsultado;
 	}
 	
-	public List<Endereco> consultarTodos() {
-		Endereco enderecoConsultado = new Endereco();
+	public List<EnderecoVO> consultarTodos() {
+		EnderecoVO enderecoConsultado = new EnderecoVO();
 		Connection conexao = Banco.getConnection();
 		String sql = " SELECT * FROM ENDERECO ";
 		
 		PreparedStatement query = Banco.getPreparedStatement(conexao, sql);
-		List<Endereco> enderecos = new ArrayList<Endereco>();
+		List<EnderecoVO> enderecos = new ArrayList<EnderecoVO>();
 		try {
 			ResultSet resultado = query.executeQuery();  //Conjuntos de Resultados
 			while(resultado.next()) {		
@@ -163,8 +163,8 @@ public class EnderecoDAO {
 	}
 	
 	
-	private Endereco converterDeResultSerParaEntidade(ResultSet resultado) throws SQLException {
-		Endereco enderecoConsultado = new Endereco();
+	private EnderecoVO converterDeResultSerParaEntidade(ResultSet resultado) throws SQLException {
+		EnderecoVO enderecoConsultado = new EnderecoVO();
 		enderecoConsultado.setId(resultado.getInt("id"));
 		enderecoConsultado.setCep(resultado.getString("cep"));
 		enderecoConsultado.setRua(resultado.getString("rua"));

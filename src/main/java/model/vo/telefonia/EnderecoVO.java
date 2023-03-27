@@ -1,6 +1,6 @@
 package model.vo.telefonia;
 
-public class Endereco {
+public class EnderecoVO {
 	
 	//Atributos
 	private Integer id;
@@ -11,7 +11,7 @@ public class Endereco {
 	private String cidade;
 	private String estado;
 	
-	public Endereco(String cep, String rua,  String numero, String bairro, String cidade, String estado) {
+	public EnderecoVO(String cep, String rua,  String numero, String bairro, String cidade, String estado) {
 		super();
 		this.cep = cep;
 		this.rua = rua;
@@ -21,7 +21,7 @@ public class Endereco {
 		this.estado = estado;
 	}
 
-	public Endereco(Integer id, String cep,  String rua, String numero, String bairro, String cidade, String estado) {
+	public EnderecoVO(Integer id, String cep,  String rua, String numero, String bairro, String cidade, String estado) {
 		super();
 		this.id = id;
 		this.cep = cep;
@@ -33,7 +33,7 @@ public class Endereco {
 	}
 
 
-	public Endereco() {
+	public EnderecoVO() {
 		super();
 		// TODO Auto-generated constructor stub
 	}

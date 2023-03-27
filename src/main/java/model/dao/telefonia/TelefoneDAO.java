@@ -8,13 +8,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import model.Banco;
-import model.vo.telefonia.Cliente;
-import model.vo.telefonia.Endereco;
-import model.vo.telefonia.Telefone;
+import model.vo.telefonia.ClienteVO;
+import model.vo.telefonia.EnderecoVO;
+import model.vo.telefonia.TelefoneVO;
 
 public class TelefoneDAO {
 	
-	public Telefone inserir(Telefone novoTelefone) {
+	public TelefoneVO inserir(TelefoneVO novoTelefone) {
 		//CONECTAR AO BANCO
 		Connection conexao = Banco.getConnection();
 		String sql = " INSERT INTO TELEFONE(IDCLIENTE, DDD, NUMERO,"
@@ -58,7 +58,7 @@ public class TelefoneDAO {
 		return novoTelefone;
 	}
 	
-	public boolean atualizar(Telefone telefoneEditado) { 
+	public boolean atualizar(TelefoneVO telefoneEditado) { 
 		boolean atualizou = false;
 		Connection conexao = Banco.getConnection();
 		String sql = " UPDATE TELEFONE "
@@ -91,8 +91,8 @@ public class TelefoneDAO {
 		return atualizou;
 	}
 	
-	public Telefone consultarPorId(int id) {
-		Telefone telefoneConsultado = new Telefone();
+	public TelefoneVO consultarPorId(int id) {
+		TelefoneVO telefoneConsultado = new TelefoneVO();
 		Connection conexao = Banco.getConnection();
 		String sql = " SELECT * FROM TELEFONE "
 				+ " WHERE ID = ?";
@@ -112,13 +112,13 @@ public class TelefoneDAO {
 		return telefoneConsultado;
 	}
 	
-	public List<Telefone> consultarTodos() {
-		Telefone telefoneConsultado = new Telefone();
+	public List<TelefoneVO> consultarTodos() {
+		TelefoneVO telefoneConsultado = new TelefoneVO();
 		Connection conexao = Banco.getConnection();
 		String sql = " SELECT * FROM TELEFONE ";
 		
 		PreparedStatement query = Banco.getPreparedStatement(conexao, sql);
-		List<Telefone> telefones = new ArrayList<Telefone>();
+		List<TelefoneVO> telefones = new ArrayList<TelefoneVO>();
 		try {
 			ResultSet resultado = query.executeQuery();  //Conjuntos de Resultados
 			while(resultado.next()) {		
@@ -162,8 +162,8 @@ public class TelefoneDAO {
 	
 	
 	
-	private Telefone converterDeResultSerParaEntidade(ResultSet resultado) throws SQLException {
-		Telefone telefoneConsultado = new Telefone();
+	private TelefoneVO converterDeResultSerParaEntidade(ResultSet resultado) throws SQLException {
+		TelefoneVO telefoneConsultado = new TelefoneVO();
 		telefoneConsultado.setId(resultado.getInt("id"));
 		telefoneConsultado.setIdCliente(resultado.getInt("idCliente"));
 		telefoneConsultado.setDdd(resultado.getString("ddd"));
@@ -173,8 +173,8 @@ public class TelefoneDAO {
 		return telefoneConsultado;
 	}
 
-	public List<Telefone> consultarPorIdCliente(Integer id) {
-		List<Telefone> telefones = new ArrayList<Telefone>();
+	public List<TelefoneVO> consultarPorIdCliente(Integer id) {
+		List<TelefoneVO> telefones = new ArrayList<TelefoneVO>();
 		Connection conexao = Banco.getConnection();
 		String sql = " SELECT * FROM TELEFONE "
 				+ " WHERE ID_CLIENTE = ? ";
@@ -185,7 +185,7 @@ public class TelefoneDAO {
 			query.setInt(1, id);
 			ResultSet resultado = query.executeQuery();  //Conjuntos de Resultados
 			while(resultado.next()) {	
-				Telefone telefoneConsultado = converterDeResultSerParaEntidade(resultado);
+				TelefoneVO telefoneConsultado = converterDeResultSerParaEntidade(resultado);
 				telefones.add(telefoneConsultado);
 			}												
 		} catch(SQLException e) {
