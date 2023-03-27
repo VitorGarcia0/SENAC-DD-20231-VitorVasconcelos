@@ -25,7 +25,7 @@ public class PessoaDAO {
 		// EXECUTAR O INSERT
 		try {
 			query.setString(1, novaPessoa.getNome());
-			query.setDate(2, novaPessoa.getDt_Nascimento());
+			query.setObject(2, novaPessoa.getDt_Nascimento());
 			query.setString(3, novaPessoa.getSexo());
 			query.setString(4, novaPessoa.getCpf());
 			
@@ -62,7 +62,7 @@ public class PessoaDAO {
 		PreparedStatement query = Banco.getPreparedStatement(conexao, sql);
 		try {
 		query.setString(1, pessoaEditada.getNome());
-		query.setDate(2, pessoaEditada.getDt_Nascimento());
+		query.setObject(2, pessoaEditada.getDt_Nascimento());
 		query.setString(3, pessoaEditada.getSexo());
 		query.setString(4, pessoaEditada.getCpf());
 		query.setInt(5, pessoaEditada.getId());			
@@ -158,7 +158,7 @@ public class PessoaDAO {
 		Pessoa pessoaConsultada = new Pessoa();
 		pessoaConsultada.setId(resultado.getInt("id"));
 		pessoaConsultada.setNome(resultado.getString("cep"));
-		pessoaConsultada.setDt_Nascimento(resultado.getDate("dt_nascimento"));
+		//pessoaConsultada.setDt_Nascimento(resultado.getObject("dt_nascimento"));
 		pessoaConsultada.setSexo(resultado.getString("sexo"));
 		pessoaConsultada.setCpf(resultado.getString("cpf"));
 		return pessoaConsultada;

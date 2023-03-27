@@ -1,17 +1,16 @@
 package model.vo.vacina;
 
-import java.sql.Date;
+import java.time.LocalDateTime;
 
 public class Vacina {
 	
 	private Integer id;
 	private String paisOrigem;
-	private String estagioPesquisa;
-	private Date dataInicioPesquisa;
+	private int estagioPesquisa;
+	private LocalDateTime dataInicioPesquisa;
 	private String nomeResponsavel;
 	
-	
-	public Vacina(Integer id, String paisOrigem, String estagioPesquisa, Date dataInicioPesquisa,
+	public Vacina(Integer id, String paisOrigem, int estagioPesquisa, LocalDateTime dataInicioPesquisa,
 			String nomeResponsavel) {
 		super();
 		this.id = id;
@@ -20,9 +19,11 @@ public class Vacina {
 		this.dataInicioPesquisa = dataInicioPesquisa;
 		this.nomeResponsavel = nomeResponsavel;
 	}
+	
 	public Vacina() {
 		super();
 	}
+
 	public Integer getId() {
 		return id;
 	}
@@ -35,16 +36,16 @@ public class Vacina {
 	public void setPaisOrigem(String paisOrigem) {
 		this.paisOrigem = paisOrigem;
 	}
-	public String getEstagioPesquisa() {
+	public int getEstagioPesquisa() {
 		return estagioPesquisa;
 	}
-	public void setEstagioPesquisa(String estagioPesquisa) {
+	public void setEstagioPesquisa(int estagioPesquisa) {
 		this.estagioPesquisa = estagioPesquisa;
 	}
-	public Date getDataInicioPesquisa() {
+	public LocalDateTime getDataInicioPesquisa() {
 		return dataInicioPesquisa;
 	}
-	public void setDataInicioPesquisa(Date dataInicioPesquisa) {
+	public void setDataInicioPesquisa(LocalDateTime dataInicioPesquisa) {
 		this.dataInicioPesquisa = dataInicioPesquisa;
 	}
 	public String getNomeResponsavel() {
@@ -55,7 +56,5 @@ public class Vacina {
 	}
 	
 	
-	
-
 
 }

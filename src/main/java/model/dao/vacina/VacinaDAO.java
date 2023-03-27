@@ -27,8 +27,8 @@ public class VacinaDAO {
 		// EXECUTAR O INSERT
 		try {
 			query.setString(1, novaVacina.getPaisOrigem());
-			query.setString(2, novaVacina.getEstagioPesquisa());
-			query.setDate(3, novaVacina.getDataInicioPesquisa());
+			query.setInt(2, novaVacina.getEstagioPesquisa());
+			query.setObject(3, novaVacina.getDataInicioPesquisa());
 			query.setString(4, novaVacina.getNomeResponsavel());
 			query.execute();
 			
@@ -63,8 +63,8 @@ public class VacinaDAO {
 		PreparedStatement query = Banco.getPreparedStatement(conexao, sql);
 		try {
 		query.setString(1, enderecoEditado.getPaisOrigem());
-		query.setString(2, enderecoEditado.getEstagioPesquisa());
-		query.setDate(3, enderecoEditado.getDataInicioPesquisa());
+		query.setInt(2, enderecoEditado.getEstagioPesquisa());
+		query.setObject(3, enderecoEditado.getDataInicioPesquisa());
 		query.setString(4, enderecoEditado.getNomeResponsavel());
 		query.setInt(7, enderecoEditado.getId());			
 		
@@ -159,8 +159,8 @@ public class VacinaDAO {
 		Vacina vacinaConsultada = new Vacina();
 		vacinaConsultada.setId(resultado.getInt("id"));
 		vacinaConsultada.setPaisOrigem(resultado.getString("cep"));
-		vacinaConsultada.setEstagioPesquisa(resultado.getString("rua"));
-		vacinaConsultada.setDataInicioPesquisa(resultado.getDate("dataInicioPesquisa"));
+		vacinaConsultada.setEstagioPesquisa(resultado.getInt("rua"));
+		//vacinaConsultada.setDataInicioPesquisa(resultado.getObject("dataInicioPesquisa"));
 		vacinaConsultada.setNomeResponsavel(resultado.getString("nomeResponsavel"));
 		return vacinaConsultada;
 	}

@@ -1,16 +1,17 @@
 package model.vo.vacina;
 
-import java.sql.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Pessoa {
 	
 	private Integer id;
 	private String nome;
-	private Date dt_Nascimento;
+	private LocalDateTime dt_Nascimento;
 	private String sexo;
 	private String cpf;
 	
-	public Pessoa(Integer id, String nome, Date dt_Nascimento, String sexo, String cpf) {
+	public Pessoa(Integer id, String nome, LocalDateTime dt_Nascimento, String sexo, String cpf) {
 		super();
 		this.id = id;
 		this.nome = nome;
@@ -18,10 +19,11 @@ public class Pessoa {
 		this.sexo = sexo;
 		this.cpf = cpf;
 	}
+	
 	public Pessoa() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
+	
 	public Integer getId() {
 		return id;
 	}
@@ -34,10 +36,10 @@ public class Pessoa {
 	public void setNome(String nome) {
 		this.nome = nome;
 	}
-	public Date getDt_Nascimento() {
+	public LocalDateTime getDt_Nascimento() {
 		return dt_Nascimento;
 	}
-	public void setDt_Nascimento(Date dt_Nascimento) {
+	public void setDt_Nascimento(LocalDateTime dt_Nascimento) {
 		this.dt_Nascimento = dt_Nascimento;
 	}
 	public String getSexo() {
@@ -53,7 +55,14 @@ public class Pessoa {
 		this.cpf = cpf;
 	}
 	
-	
+	@SuppressWarnings("unused")
+	private String validarData(LocalDateTime dt_Nascimento) {
+		String resultado = "";
+		if(dt_Nascimento != null) {
+			resultado = dt_Nascimento.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
+		}
+		return resultado;
+	}
 	
 	
 }
