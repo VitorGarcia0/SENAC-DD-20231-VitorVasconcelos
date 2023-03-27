@@ -1,78 +1,81 @@
-package model.dao.vacina;
+package model.dao.vacinacao;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 import model.Banco;
-import model.vo.vacina.Pessoa;
+import model.vo.vacina.PessoaDAO;
+import model.vo.vacina.PessoaDAO;
+import model.vo.vacina.VacinaVO;
 
-public class PessoaDAO {
+public class VacinaDAO {
 	
 	
-	public Pessoa inserir(Pessoa novaPessoa) {
+	public VacinaVO inserir(VacinaVO novaVacina) {
 		//CONECTAR AO BANCO
 		Connection conexao = Banco.getConnection();
-		String sql = " INSERT INTO Pessoa (NOME, DT_NASCIMENTO, SEXO, "
-				+ " CPF) "
-				+ " VALUES (?, ?, ?, ? ) ";
+		String sql = " INSERT INTO VACINA (PAIS_ORIGEM, ESTAGIO_PESQUISA, DATA_INICIO_PESQUISA, "
+				+ " NOME_RESPONSAVEL) "
+				+ " VALUES (?, ?, ?, ?) ";
 	
 		PreparedStatement query = Banco.getPreparedStatementWithPk(conexao, sql);
 		
 		// EXECUTAR O INSERT
 		try {
-			query.setString(1, novaPessoa.getNome());
-			query.setObject(2, novaPessoa.getDt_Nascimento());
-			query.setString(3, novaPessoa.getSexo());
-			query.setString(4, novaPessoa.getCpf());
-			
+			query.setString(1, novaVacina.getPaisOrigem());
+			query.setInt(2, novaVacina.getEstagioPesquisa());
+			query.setDate(3, Date.valueOf(novaVacina.getDataInicioPesquisa()));
+			query.setInt(4, novaVacina.getIdPessoa());
 			query.execute();
 			
 			// Prencher o id gerado no banco no objeto 
 			ResultSet resultado = query.getGeneratedKeys();
 			if(resultado.next()) {
-				novaPessoa.setId(resultado.getInt(1));
+				novaVacina.setId(resultado.getInt(1));
 			}
 
 		} catch (SQLException e) {
-			System.out.println("Erro ao inserir pessoa. "
+			System.out.println("Erro ao inserir vacina. "
 					+ "\nCausa " + e.getMessage());
 		} finally {
 			Banco.closePreparedStatement(query);
 			Banco.closeConnection(conexao);	
 		}
 		
-		return novaPessoa;
+		return novaVacina;
 	}
 	//UPDATE ENDERECO
 	//SET CEP = ?, RUA = ?, NUMERO = ?, BAIRRO = ?, 
 	//CIDADE = ?, ESTADO = ?
 	// WHERE ID = ?
-	public boolean atualizar(Pessoa pessoaEditada) { 
+	public boolean atualizar(VacinaVO vacinaEditada) { 
 		boolean atualizou = false;
 		Connection conexao = Banco.getConnection();
-		String sql = " UPDATE PESSOA "
-				+ " SET NOME = ?, DT_NASCIMENTO = ?, SEXO = ?, "
-				+ " CPF = ?, "
+		String sql = " UPDATE VACINA "
+				+ " SET PAIS_ORIGEM = ?, ESTAGIO_PESQUISA = ?, DATA_INICIO_PESQUISA = ?, "
+				+ " NOME_RESPONSAVEL = ? "
 				+ " WHERE ID = ?";
 		
 		PreparedStatement query = Banco.getPreparedStatement(conexao, sql);
 		try {
-		query.setString(1, pessoaEditada.getNome());
-		query.setObject(2, pessoaEditada.getDt_Nascimento());
-		query.setString(3, pessoaEditada.getSexo());
-		query.setString(4, pessoaEditada.getCpf());
-		query.setInt(5, pessoaEditada.getId());			
+		query.setString(1, vacinaEditada.getPaisOrigem());
+		query.setInt(2, vacinaEditada.getEstagioPesquisa());
+		query.setDate(3, Date.valueOf(vacinaEditada.getDataInicioPesquisa()));
+		query.setInt(4, vacinaEditada.getIdPessoa());
+		query.setInt(5, vacinaEditada.getId());			
 		
 		int quantidadeLinhasAtualizadas = query.executeUpdate();
 		
 		atualizou = quantidadeLinhasAtualizadas > 0;
 		
 		} catch (SQLException excecao) {
-			System.out.println("Erro ao atualizar pessoa"
+			System.out.println("Erro ao atualizar Vacina"
 					+ "\nCausa " + excecao.getMessage());
 		} finally {
 			Banco.closePreparedStatement(query);
@@ -85,7 +88,7 @@ public class PessoaDAO {
 	public boolean excluir(int id) {
 		boolean excluiu = false;
 		Connection conexao = Banco.getConnection();
-		String sql = " DELETE FROM PESSOA "
+		String sql = " DELETE FROM VACINA "
 				+ " WHERE ID = ?";
 			
 		PreparedStatement query = Banco.getPreparedStatement(conexao, sql);
@@ -95,7 +98,7 @@ public class PessoaDAO {
 			excluiu = quantidadeLinhasAtualizadas > 0;
 		
 		} catch (SQLException excecao) {
-			System.out.println("Erro ao apagar a pesoa "
+			System.out.println("Erro ao apagar o Vacina "
 					+ "\nCausa " + excecao.getMessage());
 		} finally {
 			Banco.closePreparedStatement(query);
@@ -105,10 +108,10 @@ public class PessoaDAO {
 		return excluiu;
 	}
 	
-	public Pessoa consultarPorId(int id) {
-		Pessoa pessoaConsultada = null;
+	public VacinaVO consultarPorId(int id) {
+		VacinaVO enderecoConsultado = null;
 		Connection conexao = Banco.getConnection();
-		String sql = " SELECT * FROM ENDERECO "
+		String sql = " SELECT * FROM VACINA "
 				+ " WHERE ID = ?";
 		
 		PreparedStatement query = Banco.getPreparedStatement(conexao, sql);
@@ -116,52 +119,58 @@ public class PessoaDAO {
 			query.setInt(1, id);
 			ResultSet resultado = query.executeQuery();  //Conjuntos de Resultados
 			if(resultado.next()) {
-				pessoaConsultada = converterDeResultSerParaEntidade(resultado);
+				enderecoConsultado = converterDeResultSerParaEntidade(resultado);
 			}		
 			
 		} catch(SQLException e) {
-			System.out.println("Erro ao buscar pessoa com id: " + id
+			System.out.println("Erro ao buscar vacina com id: " + id
 					+ "\nCausa: " + e.getMessage());
 		} finally {
 			Banco.closePreparedStatement(query);
 			Banco.closeConnection(conexao);
 		}
-		return pessoaConsultada;
+		return enderecoConsultado;
 	}
 	
-	public List<Pessoa> consultarTodos() {
-		Pessoa pessoaConsultada = new Pessoa();
+	public List<VacinaVO> consultarTodos() {
+		VacinaVO vacinaConsultada = new VacinaVO();
 		Connection conexao = Banco.getConnection();
-		String sql = " SELECT * FROM PESSOA ";
+		String sql = " SELECT * FROM VACINA ";
 		
 		PreparedStatement query = Banco.getPreparedStatement(conexao, sql);
-		List<Pessoa> pessoas = new ArrayList<Pessoa>();
+		List<VacinaVO> vacinas = new ArrayList<VacinaVO>();
 		try {
 			ResultSet resultado = query.executeQuery();  //Conjuntos de Resultados
 			while(resultado.next()) {		
-				pessoaConsultada = converterDeResultSerParaEntidade(resultado);				
-				pessoas.add(pessoaConsultada);
+				vacinaConsultada = converterDeResultSerParaEntidade(resultado);				
+				vacinas.add(vacinaConsultada);
 			}												
 		} catch(SQLException e) {
-			System.out.println("Erro ao buscar todos os pessoas "
+			System.out.println("Erro ao buscar todas as vacinas "
 					+ "\nCausa: " + e.getMessage());
 		} finally {
 			Banco.closePreparedStatement(query);
 			Banco.closeConnection(conexao);
 		}
 		
-		return pessoas;	
+		return vacinas;	
 	}
 	
 	
-	private Pessoa converterDeResultSerParaEntidade(ResultSet resultado) throws SQLException {
-		Pessoa pessoaConsultada = new Pessoa();
-		pessoaConsultada.setId(resultado.getInt("id"));
-		pessoaConsultada.setNome(resultado.getString("cep"));
-		//pessoaConsultada.setDt_Nascimento(resultado.getObject("dt_nascimento"));
-		pessoaConsultada.setSexo(resultado.getString("sexo"));
-		pessoaConsultada.setCpf(resultado.getString("cpf"));
-		return pessoaConsultada;
+	private VacinaVO converterDeResultSerParaEntidade(ResultSet resultado) throws SQLException {
+		VacinaVO vacinaConsultada = new VacinaVO();
+		PessoaDAO pessoaConsultada = new PessoaDAO();
+		vacinaConsultada.setId(resultado.getInt("id"));
+		vacinaConsultada.setPaisOrigem(resultado.getString("cep"));
+		vacinaConsultada.setEstagioPesquisa(resultado.getInt("rua"));
+		vacinaConsultada.setDataInicioPesquisa(LocalDate.parse(resultado.getString("dataInicioPesquisa")));
+		//vacinaConsultada(resultado.getInt("idPessoa"));
+		vacinaConsultada.getResponsavelPesquisa().getId();
+		
+		//pessoaConsultada.consultarPorId(0))
+		//pessoaConsultada
+		//VOU PEGAR O ID DA PESSOA E VOU JOGAR PRA PESSOAdao PARA ME RETORNAR O NOME
+		
+		return vacinaConsultada;
 	}
-
 }
