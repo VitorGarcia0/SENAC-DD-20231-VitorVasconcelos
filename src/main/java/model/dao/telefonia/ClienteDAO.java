@@ -44,7 +44,8 @@ public class ClienteDAO {
 			Banco.closePreparedStatement(query);
 			Banco.closeConnection(conexao);
 		}
-		
+	
 		return clienteBuscado;
 	}
 }
+
