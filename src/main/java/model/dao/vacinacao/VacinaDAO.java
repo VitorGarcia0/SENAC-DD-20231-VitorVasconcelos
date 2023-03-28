@@ -10,8 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import model.Banco;
-import model.vo.vacina.PessoaDAO;
-import model.vo.vacina.PessoaDAO;
 import model.vo.vacina.VacinaVO;
 
 public class VacinaDAO {
@@ -31,7 +29,7 @@ public class VacinaDAO {
 			query.setString(1, novaVacina.getPaisOrigem());
 			query.setInt(2, novaVacina.getEstagioPesquisa());
 			query.setDate(3, Date.valueOf(novaVacina.getDataInicioPesquisa()));
-			query.setInt(4, novaVacina.getIdPessoa());
+			query.setObject(4, novaVacina.getResponsavelPesquisa());
 			query.execute();
 			
 			// Prencher o id gerado no banco no objeto 
@@ -67,7 +65,7 @@ public class VacinaDAO {
 		query.setString(1, vacinaEditada.getPaisOrigem());
 		query.setInt(2, vacinaEditada.getEstagioPesquisa());
 		query.setDate(3, Date.valueOf(vacinaEditada.getDataInicioPesquisa()));
-		query.setInt(4, vacinaEditada.getIdPessoa());
+		query.setString(4, vacinaEditada.getResponsavelPesquisa().getNome());
 		query.setInt(5, vacinaEditada.getId());			
 		
 		int quantidadeLinhasAtualizadas = query.executeUpdate();
@@ -156,7 +154,6 @@ public class VacinaDAO {
 		return vacinas;	
 	}
 	
-	
 	private VacinaVO converterDeResultSerParaEntidade(ResultSet resultado) throws SQLException {
 		VacinaVO vacinaConsultada = new VacinaVO();
 		PessoaDAO pessoaConsultada = new PessoaDAO();
@@ -164,11 +161,8 @@ public class VacinaDAO {
 		vacinaConsultada.setPaisOrigem(resultado.getString("cep"));
 		vacinaConsultada.setEstagioPesquisa(resultado.getInt("rua"));
 		vacinaConsultada.setDataInicioPesquisa(LocalDate.parse(resultado.getString("dataInicioPesquisa")));
-		//vacinaConsultada(resultado.getInt("idPessoa"));
-		vacinaConsultada.getResponsavelPesquisa().getId();
-		
-		//pessoaConsultada.consultarPorId(0))
-		//pessoaConsultada
+		//vacinaConsultada.getResponsavelPesquisa().getId();
+		pessoaConsultada.consultarPorId(vacinaConsultada.getResponsavelPesquisa().getId());
 		//VOU PEGAR O ID DA PESSOA E VOU JOGAR PRA PESSOAdao PARA ME RETORNAR O NOME
 		
 		return vacinaConsultada;

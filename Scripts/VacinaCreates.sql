@@ -7,8 +7,10 @@ CREATE TABLE `exemplos`.`pessoa` (
   `TIPO_PESSOA` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`ID`));
   
-  ALTER TABLE `exemplos`.`pessoa` 
-CHANGE COLUMN `TIPO_PESSOA` `TIPO_PESSOA` INT NOT NULL ;
+
+ALTER TABLE `exemplosdd`.`pessoa` 
+ADD COLUMN `TIPO_PESSOA` INT NOT NULL AFTER `CPF`;
+
 
   
   

@@ -5,17 +5,25 @@ import java.time.format.DateTimeFormatter;
 
 public class PessoaVO {
 
-	private Integer id;
+	private int id;
 	private String nome;
 	private LocalDate dt_Nascimento;
 	private String sexo;
 	private String cpf;
-	private TipoPessoaVO tipoPessoaVO;
+	private int tipoPessoaVO;
 
-	public PessoaVO(Integer id, String nome, LocalDate dt_Nascimento, String sexo, String cpf,
-			TipoPessoaVO tipoPessoaVO) {
+	public PessoaVO(int id, String nome, LocalDate dt_Nascimento, String sexo, String cpf, int tipoPessoaVO) {
 		super();
 		this.id = id;
+		this.nome = nome;
+		this.dt_Nascimento = dt_Nascimento;
+		this.sexo = sexo;
+		this.cpf = cpf;
+		this.tipoPessoaVO = tipoPessoaVO;
+	}
+	
+	public PessoaVO(String nome, LocalDate dt_Nascimento, String sexo, String cpf, int tipoPessoaVO) {
+		super();
 		this.nome = nome;
 		this.dt_Nascimento = dt_Nascimento;
 		this.sexo = sexo;
@@ -27,11 +35,11 @@ public class PessoaVO {
 		super();
 	}
 
-	public Integer getId() {
+	public int getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 
@@ -67,11 +75,11 @@ public class PessoaVO {
 		this.cpf = cpf;
 	}
 
-	public TipoPessoaVO getTipoPessoa() {
+	public int getTipoPessoaVO() {
 		return tipoPessoaVO;
 	}
 
-	public void setTipoPessoa(TipoPessoaVO tipoPessoaVO) {
+	public void setTipoPessoaVO(int tipoPessoaVO) {
 		this.tipoPessoaVO = tipoPessoaVO;
 	}
 
@@ -84,4 +92,10 @@ public class PessoaVO {
 		return resultado;
 	}
 
+	@Override
+	public String toString() {
+		return "PessoaVO: id:" + id + ", nome:" + nome + ", dt_Nascimento:" + dt_Nascimento + ", sexo:" + sexo
+				+ ", cpf:" + cpf + ", tipoPessoaVO:" + tipoPessoaVO;
+	}
+	
 }

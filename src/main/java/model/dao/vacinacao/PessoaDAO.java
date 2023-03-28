@@ -30,7 +30,7 @@ public class PessoaDAO {
 			query.setDate(2, Date.valueOf(novaPessoa.getDt_Nascimento()));
 			query.setString(3, novaPessoa.getSexo());
 			query.setString(4, novaPessoa.getCpf());
-			query.setObject(5, novaPessoa.getTipoPessoa());
+			query.setInt(5, novaPessoa.getTipoPessoaVO());
 			
 			query.execute();
 			
@@ -68,7 +68,7 @@ public class PessoaDAO {
 		query.setDate(2, Date.valueOf(pessoaEditada.getDt_Nascimento()));
 		query.setString(3, pessoaEditada.getSexo());
 		query.setString(4, pessoaEditada.getCpf());
-		query.setObject(5, pessoaEditada.getTipoPessoa());
+		query.setInt(5, pessoaEditada.getTipoPessoaVO());
 		
 		query.setInt(6, pessoaEditada.getId());			
 		
@@ -166,9 +166,11 @@ public class PessoaDAO {
 		pessoaConsultada.setDt_Nascimento(LocalDate.parse(resultado.getString("dt_Nascimento")));
 		pessoaConsultada.setSexo(resultado.getString("sexo"));
 		pessoaConsultada.setCpf(resultado.getString("cpf"));
-		pessoaConsultada.setTipoPessoa(TipoPessoaVO.valueOf(resultado.getString("tipoPessoa")));	
+		
+		//pessoaConsultada.setTipoPessoa(TipoPessoaVO.valueOf(resultado.getString("tipoPessoa")));	
 		
 		return pessoaConsultada;
 	}
+	
 
 }

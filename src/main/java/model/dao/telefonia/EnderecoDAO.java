@@ -17,7 +17,7 @@ public class EnderecoDAO {
 	/**
 	 * Insere um novo endereco no banco
 	 * @param novoEndereco o endereco a ser persistido
-	 * @return o endereço inserido com a chave primária gerada
+	 * @return o endereï¿½o inserido com a chave primï¿½ria gerada
 	 */	
 	public EnderecoVO inserir(EnderecoVO novoEndereco) {
 		//CONECTAR AO BANCO
@@ -45,7 +45,7 @@ public class EnderecoDAO {
 			}
 
 		} catch (SQLException e) {
-			System.out.println("Erro ao inserir endereço. "
+			System.out.println("Erro ao inserir endereï¿½o. "
 					+ "\nCausa " + e.getMessage());
 		} finally {
 			Banco.closePreparedStatement(query);
@@ -81,7 +81,7 @@ public class EnderecoDAO {
 		atualizou = quantidadeLinhasAtualizadas > 0;
 		
 		} catch (SQLException excecao) {
-			System.out.println("Erro ao atualizar endereço"
+			System.out.println("Erro ao atualizar endereÃ§o"
 					+ "\nCausa " + excecao.getMessage());
 		} finally {
 			Banco.closePreparedStatement(query);
@@ -104,7 +104,7 @@ public class EnderecoDAO {
 			excluiu = quantidadeLinhasAtualizadas > 0;
 		
 		} catch (SQLException excecao) {
-			System.out.println("Erro ao apagar o endereço "
+			System.out.println("Erro ao apagar o endereÃ§o "
 					+ "\nCausa " + excecao.getMessage());
 		} finally {
 			Banco.closePreparedStatement(query);
@@ -129,7 +129,7 @@ public class EnderecoDAO {
 			}		
 			
 		} catch(SQLException e) {
-			System.out.println("Erro ao buscar endereço com id: " + id
+			System.out.println("Erro ao buscar endereÃ§o com id: " + id
 					+ "\nCausa: " + e.getMessage());
 		} finally {
 			Banco.closePreparedStatement(query);
@@ -152,7 +152,7 @@ public class EnderecoDAO {
 				enderecos.add(enderecoConsultado);
 			}												
 		} catch(SQLException e) {
-			System.out.println("Erro ao buscar todos os endereços "
+			System.out.println("Erro ao buscar todos os endereÃ§os "
 					+ "\nCausa: " + e.getMessage());
 		} finally {
 			Banco.closePreparedStatement(query);
