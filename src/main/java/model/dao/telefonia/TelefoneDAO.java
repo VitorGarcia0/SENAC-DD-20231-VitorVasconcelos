@@ -8,8 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import model.Banco;
-import model.vo.telefonia.ClienteVO;
-import model.vo.telefonia.EnderecoVO;
 import model.vo.telefonia.TelefoneVO;
 
 public class TelefoneDAO {

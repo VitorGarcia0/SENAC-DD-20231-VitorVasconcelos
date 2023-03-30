@@ -3,6 +3,11 @@ package executavel;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JOptionPane;
+
+import model.Exception.CpfJaUtilizadoException;
+import model.Exception.EnderecoInvalidoException;
+import model.bo.ClienteBO;
 import model.dao.telefonia.ClienteDAO;
 import model.dao.telefonia.EnderecoDAO;
 import model.dao.telefonia.TelefoneDAO;
@@ -13,16 +18,37 @@ import model.vo.telefonia.TelefoneVO;
 public class ExecutavelTelefonia {
 
 	public static void main(String[] args) {
-
-		ClienteDAO clienteDAO = new ClienteDAO();
-
-		EnderecoDAO dbaDeEnderecos = new EnderecoDAO();
-
-		List<EnderecoVO> enderecos = dbaDeEnderecos.consultarTodos();
-
-		System.out.println("========== Lista de Endere�os ==========");
-
-		EnderecoVO endereco1 = new EnderecoVO("88000123", "Mauro Ramos", "10", "Centro", "Florianopolis", "SC");
+		
+		ClienteBO clienteBO = new ClienteBO();
+		
+		ClienteVO novoCliente = new ClienteVO();
+		novoCliente.setNome("Mario Jorge");
+		novoCliente.setCpf("01300001313");
+		novoCliente.setAtivo(true);
+		
+		try {
+			clienteBO.inserir(novoCliente);
+		} catch (CpfJaUtilizadoException e) { // COLOCAR OS 2 TRATAMENTOS COM "OU" | e ||
+			JOptionPane.showMessageDialog(null, e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+		} catch (EnderecoInvalidoException e) {
+			
+			JOptionPane.showMessageDialog(null, "Erros acontecem. Causa: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+		}
+		
+		
+		
+		
+		
+		
+//		ClienteDAO clienteDAO = new ClienteDAO();
+//
+//		EnderecoDAO dbaDeEnderecos = new EnderecoDAO();
+//
+//		List<EnderecoVO> enderecos = dbaDeEnderecos.consultarTodos();
+//
+//		System.out.println("========== Lista de Endere�os ==========");
+//
+//		EnderecoVO endereco1 = new EnderecoVO("88000123", "Mauro Ramos", "10", "Centro", "Florianopolis", "SC");
 //		//nome, cpf, telefone, ativo, endereco (CLIENTES)
 //		
 //		
