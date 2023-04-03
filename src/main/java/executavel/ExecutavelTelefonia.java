@@ -1,8 +1,5 @@
 package executavel;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.swing.JOptionPane;
 
 import controller.ClienteController;
@@ -10,12 +7,8 @@ import model.Exception.CampoInvalidoException;
 import model.Exception.CpfJaUtilizadoException;
 import model.Exception.EnderecoInvalidoException;
 import model.bo.ClienteBO;
-import model.dao.telefonia.ClienteDAO;
-import model.dao.telefonia.EnderecoDAO;
-import model.dao.telefonia.TelefoneDAO;
 import model.vo.telefonia.ClienteVO;
 import model.vo.telefonia.EnderecoVO;
-import model.vo.telefonia.TelefoneVO;
 
 public class ExecutavelTelefonia {
 
@@ -44,8 +37,7 @@ public class ExecutavelTelefonia {
 			
 			JOptionPane.showMessageDialog(null, "Cliente Salvo com sucesso! Id gerado");
 			clienteController.inserir(novoCliente);
-		} catch (CpfJaUtilizadoException  | EnderecoInvalidoException |
-				CampoInvalidoException e) {
+		} catch (CpfJaUtilizadoException  | EnderecoInvalidoException |	CampoInvalidoException e) {
 			JOptionPane.showMessageDialog(null, e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
 		}
 		
