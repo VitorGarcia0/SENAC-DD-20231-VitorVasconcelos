@@ -45,7 +45,7 @@ public class EnderecoDAO {
 			}
 
 		} catch (SQLException e) {
-			System.out.println("Erro ao inserir endere�o. "
+			System.out.println("Erro ao inserir endereço. "
 					+ "\nCausa " + e.getMessage());
 		} finally {
 			Banco.closePreparedStatement(query);

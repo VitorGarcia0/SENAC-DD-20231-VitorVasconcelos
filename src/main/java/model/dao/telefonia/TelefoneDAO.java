@@ -197,6 +197,37 @@ public class TelefoneDAO {
 		return telefones;	
 	}
 
+	public void ativarTelefones(Integer idDono, List<TelefoneVO> telefones) {
+		for (TelefoneVO telefoneDoCliente : telefones) {
+			telefoneDoCliente.setIdCliente(idDono);
+			telefoneDoCliente.setAtivo(true);
+			if (telefoneDoCliente.getId() > 0) {
+				// UPDATE no Telefone
+				this.atualizar(telefoneDoCliente);
+			} else {
+				// INSERT no Telefone
+				this.inserir(telefoneDoCliente);
+			}
+		}
+	}
+
+	public void desativarTelefones(int idCliente) {
+		Connection conn = Banco.getConnection();
+		String sql = " UPDATE EXEMPLOS.TELEFONE "
+				   + " SET id_cliente= NULL, ativo= 0 "
+				   + " WHERE ID_CLIENTE= ? ";
+
+		PreparedStatement stmt = Banco.getPreparedStatement(conn, sql);
+
+		try {
+			stmt.setInt(1, idCliente);
+			stmt.executeUpdate();
+		} catch (SQLException e) {
+			System.out.println("Erro ao desativar telefone.");
+			System.out.println("Erro: " + e.getMessage());
+		}
+	}
+
 	
 	
 	

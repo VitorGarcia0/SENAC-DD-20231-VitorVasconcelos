@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
+import controller.ClienteController;
+import model.Exception.CampoInvalidoException;
 import model.Exception.CpfJaUtilizadoException;
 import model.Exception.EnderecoInvalidoException;
 import model.bo.ClienteBO;
@@ -19,28 +21,52 @@ public class ExecutavelTelefonia {
 
 	public static void main(String[] args) {
 		
-		ClienteBO clienteBO = new ClienteBO();
+		EnderecoVO novoEndereco = new EnderecoVO();
+		novoEndereco.setCep("12345678");
+		novoEndereco.setRua("Mauro Ramos");
+		novoEndereco.setNumero("84");
+		novoEndereco.setBairro("Centro");
+		novoEndereco.setCidade("Florianópolis");
+		novoEndereco.setEstado("SC");
 		
+		ClienteController clienteController = new ClienteController();
+		
+		ClienteBO clienteBO = new ClienteBO();
+//		ClienteDAO clienteDAO = new ClienteDAO();
 		ClienteVO novoCliente = new ClienteVO();
 		novoCliente.setNome("Mario Jorge");
 		novoCliente.setCpf("01300001313");
 		novoCliente.setAtivo(true);
+		novoCliente.setEndereco(novoEndereco);
 		
 		try {
-			clienteBO.inserir(novoCliente);
-		} catch (CpfJaUtilizadoException e) { // COLOCAR OS 2 TRATAMENTOS COM "OU" | e ||
-			JOptionPane.showMessageDialog(null, e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
-		} catch (EnderecoInvalidoException e) {
+			novoCliente = clienteController.inserir(novoCliente);
 			
-			JOptionPane.showMessageDialog(null, "Erros acontecem. Causa: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, "Cliente Salvo com sucesso! Id gerado");
+			clienteController.inserir(novoCliente);
+		} catch (CpfJaUtilizadoException  | EnderecoInvalidoException |
+				CampoInvalidoException e) {
+			JOptionPane.showMessageDialog(null, e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
 		}
 		
+	}
 		
 		
+//		try {
+//			clienteBO.inserir(novoCliente);
+//		} catch (CpfJaUtilizadoException e) { // COLOCAR OS 2 TRATAMENTOS COM "OU" | e ||
+//			JOptionPane.showMessageDialog(null, e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+//		} catch (EnderecoInvalidoException e) {
+//			
+//			JOptionPane.showMessageDialog(null, "Erros acontecem. Causa: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+//		}
+//		
+//		clienteDAO.excluir(1);
+//		clienteBO
+		//System.out.println(novoCliente);
 		
 		
-		
-//		ClienteDAO clienteDAO = new ClienteDAO();
+	
 //
 //		EnderecoDAO dbaDeEnderecos = new EnderecoDAO();
 //
@@ -130,4 +156,4 @@ public class ExecutavelTelefonia {
 //		} */
 
 	}
-}
+

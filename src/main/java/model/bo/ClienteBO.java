@@ -1,43 +1,78 @@
 package model.bo;
 
+import model.Exception.ClienteComTelefoneException;
 import model.Exception.CpfJaUtilizadoException;
 import model.Exception.EnderecoInvalidoException;
 import model.dao.telefonia.ClienteDAO;
 import model.vo.telefonia.ClienteVO;
 
 public class ClienteBO {
-	
+	/**
+	 * Insere um novo cliente, mas faz validações que podem gerar exceções
+	 * 
+	 * @param novoCliente
+	 * @return o novoCliente inserido, com a PK gerada
+	 * @throws CpfJaUtilizadoException
+	 * @throws EnderecoInvalidoException
+	 */
+
 	private ClienteDAO dao = new ClienteDAO();
-	
-	public ClienteVO inserir(ClienteVO novoCliente) throws CpfJaUtilizadoException,
-			EnderecoInvalidoException {
-	
-		if(dao.cpfJaUtilizado(novoCliente.getCpf())) {
-			//CASO CPF JÁ FOI UTILIZADO -- NÃO SALVAR E DEVOLVER EXCEÇÃO
+
+	public ClienteVO inserir(ClienteVO novoCliente) throws CpfJaUtilizadoException, EnderecoInvalidoException {
+
+		if (dao.cpfJaUtilizado(novoCliente.getCpf())) {
+			// CASO CPF JÁ FOI UTILIZADO -- NÃO SALVAR E DEVOLVER EXCEÇÃO
 			// NÃO SALVAR -- LANÇAR EXCEÇÃO
 			throw new CpfJaUtilizadoException("CPF informado já foi utilizado");
-			
+
 		}
-		if(novoCliente.getEndereco() == null || novoCliente.getEndereco().getId() == null) {
+		if (novoCliente.getEndereco() == null || novoCliente.getEndereco().getId() == null) {
 			throw new EnderecoInvalidoException("Endereço não informado");
 		}
-		
-			
-		
+
 		novoCliente = dao.inserir(novoCliente);
-			//CASO CPF NÃO UTILIZADO --  SALVAR E DEVOLVER O CLIENTE
-			//SALVAR
-		
-		
+		// CASO CPF NÃO UTILIZADO -- SALVAR E DEVOLVER O CLIENTE
+		// SALVAR
+
 		return novoCliente;
 	}
-	
-	
-	public boolean excluir(int id) {
+
+//	public boolean atualizarCliente(clienteAlterado) throws EnderecoInvalidoException, CpfAlteradoException {
+//		Cliente clienteOriginal = dao.consultarPorId(clienteAlterado.getId());
+//		
+//		if(clienteAlterado.getCpf() != clienteOriginal.getCpf()) {
+//			throw new CpfAlteradoException("CPF não pode ser alterado");
+//		}
+//		
+//		validarEndereco(clienteAlterado);
+//
+//		return dao.atualizar(clienteAlterado);
+//	} 
+//			
+//	
+
+	/**
+	 * não deixar excluir cliente que possua telefone associado Criar exceção
+	 * ClienteComTelefoneException Caso cliente possua telefone(s): lançar
+	 * ClienteComTelefoneException Caso contrário: chamar dao.excluir(id)
+	 * 
+	 * @param id
+	 * @return se excluiu ou não o cliente
+	 * @throws ClienteComTelefoneException
+	 */
+	public boolean excluir(int id) throws ClienteComTelefoneException {
 		// FAZER EM CASA
+		// não deixar excluir cliente que possua telefone associado
+		// Criar exceção ClienteComTelefoneException
+		ClienteVO clienteBuscado = new ClienteVO();
 		
-		
+		if (clienteBuscado.getTelefones().size() > 0) {
+			throw new ClienteComTelefoneException("O cliente possui telefone, não pode excluir ");
+
+		}
+
 		return false;
-	
+
 	}
-}	
+
+}
