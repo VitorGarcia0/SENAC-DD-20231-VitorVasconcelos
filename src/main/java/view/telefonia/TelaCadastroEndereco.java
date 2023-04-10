@@ -1,4 +1,4 @@
-package view;
+package view.telefonia;
 
 import java.awt.EventQueue;
 
@@ -32,6 +32,8 @@ public class TelaCadastroEndereco {
 	private JComboBox cbEstado;
 	private JButton btnSalvar;
 	
+	
+		// CHAMAR API ou BACKEND FUTURAMENTE
 	private String[] estados = {"Paraná", "Rio Grande do Sul", "Santa Catarina"};
 	
 	/**
@@ -117,6 +119,7 @@ public class TelaCadastroEndereco {
 		frmCadastroDeEndereco.getContentPane().add(txtCidade);
 		
 		cbEstado = new JComboBox(estados);
+		cbEstado.setToolTipText("Selecione");
 		cbEstado.setSelectedIndex(-1);
 		cbEstado.setBounds(60, 136, 300, 22);
 		frmCadastroDeEndereco.getContentPane().add(cbEstado);
@@ -128,6 +131,7 @@ public class TelaCadastroEndereco {
 				endereco.setRua(txtRua.getText());
 				endereco.setCep(txtCEP.getText());
 				endereco.setNumero(txtNumero.getText());
+				endereco.setBairro(txtBairro.getText());;
 				endereco.setCidade(txtCidade.getText());
 				endereco.setEstado((String) cbEstado.getSelectedItem());
 				

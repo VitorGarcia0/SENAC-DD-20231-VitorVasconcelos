@@ -9,35 +9,40 @@ import model.vo.telefonia.ClienteVO;
 public class ClienteController {
 
 	private ClienteBO bo = new ClienteBO();
-	
-	public ClienteVO inserir(ClienteVO novoCliente) throws CpfJaUtilizadoException, EnderecoInvalidoException, CampoInvalidoException {
-		
-		validarCamposObrigatorios(novoCliente);
-		
+
+	public ClienteVO inserir(ClienteVO novoCliente)
+			throws CpfJaUtilizadoException, EnderecoInvalidoException, CampoInvalidoException {
+
+		this.validarCamposObrigatorios(novoCliente);
+
 		return bo.inserir(novoCliente);
-		
+
 	}
 	
 	
-	
-	
+
 	private void validarCamposObrigatorios(ClienteVO cliente) throws CampoInvalidoException {
 		String mensagemValidacao = "";
-		
-		
-		if(cliente.getNome() != null || cliente.getNome().trim().length() < 2) {
+
+		if (cliente.getNome() == null || cliente.getNome().trim().length() < 2) {
 			mensagemValidacao += "Nome inválido \n";
-		} 
-		
-		if(cliente.getCpf() != null ) {
-			if(cliente.getCpf().length() != 11) {
-				System.out.println("Tem q ter 11 digitos");
-			}
-			try {
-				Integer.valueOf(cliente.getCpf());
-			} catch (NumberFormatException excep) {
-				throw new CampoInvalidoException("CPF deve possuir somente números");
-			}
 		}
+		
+		mensagemValidacao += validarCPF(cliente);
+
+		if(cliente.getEndereco() == null) {
+			mensagemValidacao += "Informe um endereço: \n";
+		}
+		
+		if(!mensagemValidacao.isEmpty()) {
+			throw new CampoInvalidoException(mensagemValidacao);
+		}
+	}
+
+
+
+	private String validarCPF(ClienteVO cliente) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
