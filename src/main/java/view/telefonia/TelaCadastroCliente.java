@@ -3,6 +3,7 @@ package view.telefonia;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +12,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
+import javax.swing.text.MaskFormatter;
 
 import controller.ClienteController;
 import controller.EnderecoController;
@@ -22,6 +24,7 @@ import model.vo.telefonia.EnderecoVO;
 
 import javax.swing.JFormattedTextField;
 import javax.swing.JButton;
+import java.awt.Color;
 
 public class TelaCadastroCliente {
 	// PARA CRIAR UMA NOVA TELA, NEW -> OTHHER -> WINDOW - > SWING DESIGNER ->
@@ -34,6 +37,7 @@ public class TelaCadastroCliente {
 	private JLabel lblEndereco;
 	private JLabel lblNome;
 	private JButton btnSalvar;
+	private MaskFormatter mascaraCpf;
 
 	/**
 	 * Launch the application.
@@ -53,82 +57,104 @@ public class TelaCadastroCliente {
 
 	/**
 	 * Create the application.
+	 * 
+	 * @throws ParseException
 	 */
-	public TelaCadastroCliente() {
+	public TelaCadastroCliente() throws ParseException {
 		initialize();
 	}
 
 	/**
 	 * Initialize the contents of the frame.
+	 * 
+	 * @throws ParseException
 	 */
-	private void initialize() {
+	private void initialize() throws ParseException {
 		frmCadastroDeCliente = new JFrame();
-		
-		frmCadastroDeCliente.setTitle("Novo Cliente");
-		frmCadastroDeCliente.setBounds(100, 100, 450, 300);
+		frmCadastroDeCliente.getContentPane().setBackground(new Color(255, 255, 255));
+		frmCadastroDeCliente.getContentPane().setForeground(new Color(0, 0, 0));
+
+		frmCadastroDeCliente.setTitle("Cadastro De Cliente");
+		frmCadastroDeCliente.setBounds(100, 100, 380, 235);
 		frmCadastroDeCliente.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmCadastroDeCliente.getContentPane().setLayout(null);
-		
-		EnderecoController controller = new EnderecoController();
-		controller.consultarTodos();
-		List<EnderecoVO> listaEnderecos = new ArrayList<EnderecoVO>();
-		listaEnderecos = controller.consultarTodos();
-		cbEndereco = new JComboBox();
+
+		EnderecoController endController = new EnderecoController();
+		// controller.consultarTodos();
+		List<EnderecoVO> listaEnderecos = endController.consultarTodos();
+		cbEndereco = new JComboBox<>(listaEnderecos.toArray());
+		// cbEndereco = new JComboBox();
+
 		cbEndereco.setToolTipText("Selecione");
 		cbEndereco.setSelectedIndex(-1);
-		cbEndereco.setBounds(95, 85, 260, 20);
-		
+		cbEndereco.setBounds(75, 85, 253, 20);
+
+		// List<EnderecoVO> endereco = new ArrayList<EnderecoVO>();
+		// cbEndereco = new JComboBox<>(endereco.toArray());
+
 		frmCadastroDeCliente.getContentPane().add(cbEndereco);
-		
+
 		txtNome = new JTextField();
 		txtNome.setBounds(75, 25, 200, 20);
 		frmCadastroDeCliente.getContentPane().add(txtNome);
 		txtNome.setColumns(10);
-		
+
 		lblCPF = new JLabel("CPF:");
 		lblCPF.setBounds(20, 55, 46, 20);
 		frmCadastroDeCliente.getContentPane().add(lblCPF);
-		
+
 		lblEndereco = new JLabel("Endereco:");
 		lblEndereco.setBounds(20, 85, 76, 20);
 		frmCadastroDeCliente.getContentPane().add(lblEndereco);
-		
+
 		lblNome = new JLabel("Nome:");
 		lblNome.setBounds(20, 25, 46, 20);
 		frmCadastroDeCliente.getContentPane().add(lblNome);
-		
-		txtCPF = new JFormattedTextField();
-		txtCPF.setBounds(75, 56, 200, 20);
+
+		// MASCARA DO CPF
+		// # --> MÁSCARA PRA NÚMERO
+		// $ --> MÁSCARA PARA LETRAS
+		mascaraCpf = new MaskFormatter("###.###.###-##");
+
+		txtCPF = new JFormattedTextField(mascaraCpf);
+		txtCPF.setBounds(75, 55, 200, 20);
 		frmCadastroDeCliente.getContentPane().add(txtCPF);
-		
+
 		btnSalvar = new JButton("Salvar");
+		btnSalvar.setBackground(Color.WHITE);
+		btnSalvar.setForeground(Color.BLACK);
 		btnSalvar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				ClienteVO novoCliente = new ClienteVO();
 				novoCliente.setNome(txtNome.getText());
-				novoCliente.setCpf(txtCPF.getText());
-				novoCliente.setEndereco((EnderecoVO)cbEndereco.getSelectedItem());
-				
-				ClienteController controller = new ClienteController();
 				
 				try {
-					controller.inserir(novoCliente);
+					String cpfSemMascara = (String) mascaraCpf.stringToValue(txtCPF.getText());
+				} catch (ParseException e1) {
+					JOptionPane.showMessageDialog(null, "Erro ao converter o CPF", "Erro", JOptionPane.WARNING_MESSAGE);
+				}
+				
+				novoCliente.setEndereco((EnderecoVO) cbEndereco.getSelectedItem()); // PEGA O OBJETO SELECIONADO
+
+				ClienteController clienteController = new ClienteController();
+
+				try {
+					clienteController.inserir(novoCliente);
+					JOptionPane.showMessageDialog(null, "Cliente salvo com sucesso", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+					
 				} catch (CpfJaUtilizadoException e1) {
-					JOptionPane.showMessageDialog(null, 
-							"Cpf já foi utilizado: \n\n" + e1.getMessage(), 
-							"Atenção", JOptionPane.WARNING_MESSAGE);
+					JOptionPane.showMessageDialog(null, "Cpf já foi utilizado: \n\n" + e1.getMessage(), "Atenção",
+							JOptionPane.WARNING_MESSAGE);
 				} catch (EnderecoInvalidoException e1) {
-					JOptionPane.showMessageDialog(null, 
-							"Endereço inválido: \n\n" + e1.getMessage(), 
-							"Atenção", JOptionPane.WARNING_MESSAGE);
+					JOptionPane.showMessageDialog(null, "Endereço inválido: \n\n" + e1.getMessage(), "Atenção",
+							JOptionPane.WARNING_MESSAGE);
 				} catch (CampoInvalidoException e1) {
-					JOptionPane.showMessageDialog(null, 
-							"Preencha os seguintes campos: \n\n" + e1.getMessage(), 
+					JOptionPane.showMessageDialog(null, "Preencha os seguintes campos: \n\n" + e1.getMessage(),
 							"Atenção", JOptionPane.WARNING_MESSAGE);
 				}
 			}
 		});
-		btnSalvar.setBounds(129, 140, 90, 25);
+		btnSalvar.setBounds(264, 128, 80, 30);
 		frmCadastroDeCliente.getContentPane().add(btnSalvar);
 	}
 }
