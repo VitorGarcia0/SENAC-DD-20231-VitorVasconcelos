@@ -80,10 +80,8 @@ public class TelaCadastroCliente {
 		frmCadastroDeCliente.getContentPane().setLayout(null);
 
 		EnderecoController endController = new EnderecoController();
-		// controller.consultarTodos();
 		List<EnderecoVO> listaEnderecos = endController.consultarTodos();
 		cbEndereco = new JComboBox<>(listaEnderecos.toArray());
-		// cbEndereco = new JComboBox();
 
 		cbEndereco.setToolTipText("Selecione");
 		cbEndereco.setSelectedIndex(-1);
@@ -121,36 +119,28 @@ public class TelaCadastroCliente {
 		frmCadastroDeCliente.getContentPane().add(txtCPF);
 
 		btnSalvar = new JButton("Salvar");
-		btnSalvar.setBackground(Color.WHITE);
-		btnSalvar.setForeground(Color.BLACK);
 		btnSalvar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				ClienteVO novoCliente = new ClienteVO();
 				novoCliente.setNome(txtNome.getText());
-				
+
 				try {
 					String cpfSemMascara = (String) mascaraCpf.stringToValue(txtCPF.getText());
+					novoCliente.setCpf(cpfSemMascara);
 				} catch (ParseException e1) {
-					JOptionPane.showMessageDialog(null, "Erro ao converter o CPF", "Erro", JOptionPane.WARNING_MESSAGE);
+					JOptionPane.showMessageDialog(null, "Erro ao converter o CPF", "Erro", JOptionPane.ERROR_MESSAGE);
 				}
-				
-				novoCliente.setEndereco((EnderecoVO) cbEndereco.getSelectedItem()); // PEGA O OBJETO SELECIONADO
 
+				novoCliente.setEndereco((EnderecoVO) cbEndereco.getSelectedItem()); // PEGA O OBJETO SELECIONADO
 				ClienteController clienteController = new ClienteController();
 
 				try {
 					clienteController.inserir(novoCliente);
-					JOptionPane.showMessageDialog(null, "Cliente salvo com sucesso", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
-					
-				} catch (CpfJaUtilizadoException e1) {
-					JOptionPane.showMessageDialog(null, "Cpf já foi utilizado: \n\n" + e1.getMessage(), "Atenção",
-							JOptionPane.WARNING_MESSAGE);
-				} catch (EnderecoInvalidoException e1) {
-					JOptionPane.showMessageDialog(null, "Endereço inválido: \n\n" + e1.getMessage(), "Atenção",
-							JOptionPane.WARNING_MESSAGE);
-				} catch (CampoInvalidoException e1) {
-					JOptionPane.showMessageDialog(null, "Preencha os seguintes campos: \n\n" + e1.getMessage(),
-							"Atenção", JOptionPane.WARNING_MESSAGE);
+					JOptionPane.showMessageDialog(null, "Cliente salvo com sucesso", "Sucesso",
+							JOptionPane.INFORMATION_MESSAGE);
+
+				} catch (CpfJaUtilizadoException | EnderecoInvalidoException | CampoInvalidoException excecao) {
+					JOptionPane.showMessageDialog(null, excecao.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		});

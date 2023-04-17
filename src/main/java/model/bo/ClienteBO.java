@@ -1,5 +1,7 @@
 package model.bo;
 
+import java.util.List;
+
 import model.Exception.ClienteComTelefoneException;
 import model.Exception.CpfJaUtilizadoException;
 import model.Exception.EnderecoInvalidoException;
@@ -73,6 +75,23 @@ public class ClienteBO {
 
 		return false;
 
+	}
+	
+	public ClienteVO consultarPorId(int id) {
+		
+		return dao.consultarPorId(id);
+	}
+
+	public List<ClienteVO> consultarTodos() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	private void validarEndereco(ClienteVO cliente) throws EnderecoInvalidoException {
+		if(cliente.getEndereco() == null 
+				|| cliente.getEndereco().getId() == null) {
+			throw new EnderecoInvalidoException("Endereço não informado");
+		}
 	}
 
 }

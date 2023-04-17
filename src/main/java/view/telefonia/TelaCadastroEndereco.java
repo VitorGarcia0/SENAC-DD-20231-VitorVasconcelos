@@ -34,7 +34,7 @@ public class TelaCadastroEndereco {
 	
 	
 		// CHAMAR API ou BACKEND FUTURAMENTE
-	private String[] estados = {"Paraná", "Rio Grande do Sul", "Santa Catarina"};
+	private String[] estados = {"Paraná", "Rio Grande do Sul", "SC"};
 	
 	/**
 	 * Launch the application.
@@ -138,6 +138,8 @@ public class TelaCadastroEndereco {
 				EnderecoController controller = new EnderecoController();
 				try {
 					controller.inserir(endereco);
+					JOptionPane.showMessageDialog(null, "Endereço salvo com sucesso", "Sucesso",
+							JOptionPane.INFORMATION_MESSAGE);
 				} catch (CampoInvalidoException e1) {
 					JOptionPane.showMessageDialog(null, 
 							"Preencha os seguintes campos: \n\n" + e1.getMessage(), 
