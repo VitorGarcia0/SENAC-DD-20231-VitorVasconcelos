@@ -30,7 +30,7 @@ public class ClienteController {
 			mensagemValidacao += "Nome inválido \n";
 		}
 		
-		mensagemValidacao += validarCPF(cliente);
+		mensagemValidacao += validarCpf(cliente);
 
 		if(cliente.getEndereco() == null) {
 			mensagemValidacao += "Informe um endereço: \n";
@@ -54,26 +54,17 @@ public class ClienteController {
 				validacao += "CPF deve possuir 11 dígitos\n" ;	
 			}
 			
-//			try {
-//				Integer.valueOf(c.getCpf());
-//			} catch (NumberFormatException ex) {
-//				
-//				//TODO conferir
-//				validacao += "CPF deve possuir somente números\n";
-//			}
+			try {
+				Double.valueOf(c.getCpf());
+			} catch (NumberFormatException ex) {
+				
+				//TODO conferir
+				validacao += "CPF deve possuir somente números\n";
+			}
 		}
 		
 		return validacao;
 	}
-
-
-
-	private String validarCPF(ClienteVO cliente) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
 
 	public List<ClienteVO> consultarTodos() {
 		

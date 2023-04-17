@@ -113,6 +113,7 @@ public class TelaCadastroCliente {
 		// # --> MÁSCARA PRA NÚMERO
 		// $ --> MÁSCARA PARA LETRAS
 		mascaraCpf = new MaskFormatter("###.###.###-##");
+		mascaraCpf.setValueContainsLiteralCharacters(false);
 
 		txtCPF = new JFormattedTextField(mascaraCpf);
 		txtCPF.setBounds(75, 55, 200, 20);
