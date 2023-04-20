@@ -13,6 +13,8 @@ import javax.swing.text.MaskFormatter;
 
 import controller.ClienteController;
 import controller.TelefoneController;
+import model.Exception.TelefoneJaUtilizadoException;
+import model.vo.telefonia.ClienteVO;
 import model.vo.telefonia.TelefoneVO;
 import javax.swing.JCheckBox;
 import javax.swing.ButtonGroup;
@@ -102,6 +104,7 @@ public class TelaCadastroTelefone {
 		ClienteController clienteController = new ClienteController();
 		cbCliente = new JComboBox(clienteController.consultarTodos().toArray());
 		cbCliente.setBounds(90, 100, 250, 20);
+		// INICIA SEM ESTAR PREENCHIDO
 		cbCliente.setSelectedItem(null);
 		frmCadastroDeTelefone.getContentPane().add(cbCliente);
 
@@ -154,27 +157,67 @@ public class TelaCadastroTelefone {
 		btnSalvar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				TelefoneVO novoTelefone = new TelefoneVO();
-				novoTelefone.setNumero(txtTelefoneFixo.getText());
 				novoTelefone.setMovel(rbMovel.isSelected());
-				novoTelefone.setMovel(rbFixo.isSelected());
-//				novoTelefone.setAtivo(true);
+
+				preencherNumeroDdd(novoTelefone);
+
+				ClienteVO clienteSelecionado = (ClienteVO) cbCliente.getSelectedItem();
+				if (clienteSelecionado != null) {
+					novoTelefone.setIdCliente(clienteSelecionado.getId());
+				}
 
 				TelefoneController telController = new TelefoneController();
-				telController.inserir(novoTelefone);
-				JOptionPane.showMessageDialog(null, "Telefone Salvo!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+				try {
+					telController.inserir(novoTelefone);
+					JOptionPane.showMessageDialog(null, "Telefone salvo!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+				} catch (TelefoneJaUtilizadoException e1) {
+					
+					JOptionPane.showMessageDialog(null, e1.getMessage(), "Atenção!", JOptionPane.ERROR_MESSAGE);
+				}
+				
+				limparTela();
+			}
+
+			private void preencherNumeroDdd(TelefoneVO novoTelefone) {
+				String numeroCompletoDigitado = "";
+				if (novoTelefone.isMovel()) {
+					try {
+						numeroCompletoDigitado = mascaraTelefoneMovel.stringToValue(txtTelefoneMovel.getText()) + "\n";
+
+					} catch (ParseException e1) {
+						JOptionPane.showMessageDialog(null, "Informe um número válido", "Atenção",
+								JOptionPane.WARNING_MESSAGE);
+					}
+				} else {
+					try {
+						numeroCompletoDigitado = mascaraTelefoneFixo.stringToValue(txtTelefoneFixo.getText()) + "\n";
+						
+					} catch (ParseException e1) {
+						JOptionPane.showMessageDialog(null, "Informe um número válido", "Atenção",
+								JOptionPane.WARNING_MESSAGE);
+					}
+				}
+
+				String ddd = numeroCompletoDigitado.substring(0, 2);
+				String numero = numeroCompletoDigitado.substring(2);
+
+				novoTelefone.setDdd(ddd);
+				novoTelefone.setNumero(numero);
+
 			}
 
 		});
+
 		// SÓ CADASTRO O CLIENTE SE FOR SELECIONADO
 		frmCadastroDeTelefone.getContentPane().add(btnSalvar);
-
-		/**
-		 * Limpa todos os campos da tela, depois de salvar uma tela
-		 *
-		 */
 	}
 
-	private void limparTela() {
+	/**
+	 * Limpa todos os campos da tela, depois de salvar uma tela
+	 *
+	 */
+
+	protected void limparTela() {
 		this.rbFixo.setSelected(false);
 		this.rbMovel.setSelected(false);
 		this.txtTelefoneFixo.setText("");

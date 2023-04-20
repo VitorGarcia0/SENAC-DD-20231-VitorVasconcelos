@@ -67,8 +67,8 @@ public class ClienteVO {
 	}
 	@Override
 	public String toString() {
-		return "Cliente [id=" + id + ", nome=" + nome + ", cpf=" + cpf + ", telefones=" + telefones + ", ativo=" + ativo
-				+ ", endereco=" + endereco + "]";
+		return "Cliente id:" + id + " nome:" + nome + " cpf:" + cpf + " telefones:" + telefones + " ativo:" + ativo
+				+ ", endereco:" + endereco + "\n";
 	}
 
 	

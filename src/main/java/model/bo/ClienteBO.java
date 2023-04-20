@@ -3,6 +3,7 @@ package model.bo;
 import java.util.List;
 
 import model.Exception.ClienteComTelefoneException;
+import model.Exception.CpfAlteradoException;
 import model.Exception.CpfJaUtilizadoException;
 import model.Exception.EnderecoInvalidoException;
 import model.dao.telefonia.ClienteDAO;
@@ -28,9 +29,7 @@ public class ClienteBO {
 			throw new CpfJaUtilizadoException("CPF informado já foi utilizado");
 
 		}
-		if (novoCliente.getEndereco() == null || novoCliente.getEndereco().getId() == null) {
-			throw new EnderecoInvalidoException("Endereço não informado");
-		}
+		validarEndereco(novoCliente);
 
 		novoCliente = dao.inserir(novoCliente);
 		// CASO CPF NÃO UTILIZADO -- SALVAR E DEVOLVER O CLIENTE
@@ -39,19 +38,19 @@ public class ClienteBO {
 		return novoCliente;
 	}
 
-//	public boolean atualizarCliente(clienteAlterado) throws EnderecoInvalidoException, CpfAlteradoException {
-//		Cliente clienteOriginal = dao.consultarPorId(clienteAlterado.getId());
-//		
-//		if(clienteAlterado.getCpf() != clienteOriginal.getCpf()) {
-//			throw new CpfAlteradoException("CPF não pode ser alterado");
-//		}
-//		
-//		validarEndereco(clienteAlterado);
-//
-//		return dao.atualizar(clienteAlterado);
-//	} 
-//			
-//	
+	public boolean atualizar(ClienteVO clienteAlterado) throws EnderecoInvalidoException, CpfAlteradoException {
+		ClienteVO clienteOriginal = dao.consultarPorId(clienteAlterado.getId());
+		
+		if(clienteAlterado.getCpf() != clienteOriginal.getCpf()) {
+			throw new CpfAlteradoException("CPF não pode ser alterado");
+		}
+		
+		validarEndereco(clienteAlterado);
+
+		return dao.atualizar(clienteAlterado);
+	} 
+			
+	
 
 	/**
 	 * não deixar excluir cliente que possua telefone associado Criar exceção
@@ -68,12 +67,12 @@ public class ClienteBO {
 		// Criar exceção ClienteComTelefoneException
 		ClienteVO clienteBuscado = new ClienteVO();
 		
-		if (clienteBuscado.getTelefones().size() > 0) {
-			throw new ClienteComTelefoneException("O cliente possui telefone, não pode excluir ");
+		if (!clienteBuscado.getTelefones().isEmpty()) {
+			throw new ClienteComTelefoneException("O cliente possui telefone(s), não pode excluir ");
 
 		}
 
-		return false;
+		return dao.excluir(id);
 
 	}
 	
@@ -83,8 +82,8 @@ public class ClienteBO {
 	}
 
 	public List<ClienteVO> consultarTodos() {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return dao.consultarTodos();
 	}
 	
 	private void validarEndereco(ClienteVO cliente) throws EnderecoInvalidoException {

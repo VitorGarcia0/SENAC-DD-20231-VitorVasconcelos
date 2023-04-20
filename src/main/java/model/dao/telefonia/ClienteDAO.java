@@ -25,23 +25,12 @@ public class ClienteDAO {
 			ResultSet resultado = query.executeQuery();
 
 			if (resultado.next()) {
-				clienteBuscado = new ClienteVO();
-				clienteBuscado.setId(resultado.getInt("id"));
-				clienteBuscado.setNome(resultado.getString("nome"));
-				clienteBuscado.setCpf(resultado.getString("cpf"));
-				clienteBuscado.setAtivo(resultado.getBoolean("ativo"));
-
-				int idEnderecoDoCliente = resultado.getInt("id_endereco");
-
-				EnderecoDAO enderecoDAO = new EnderecoDAO();
-				EnderecoVO enderecoDoCliente = enderecoDAO.consultarPorId(idEnderecoDoCliente);
-				clienteBuscado.setEndereco(enderecoDoCliente);
-				TelefoneDAO telefoneDAO = new TelefoneDAO();
-				clienteBuscado.setTelefones(telefoneDAO.consultarPorIdCliente(clienteBuscado.getId()));
+				clienteBuscado = montarClienteComResultadoDoBanco(resultado);
 
 			}
 		} catch (Exception e) {
 			System.out.println("Erro ao buscar cliente com id: " + id + "\nCausa: " + e.getMessage());
+
 		} finally {
 			Banco.closePreparedStatement(query);
 			Banco.closeConnection(conexao);
@@ -66,6 +55,7 @@ public class ClienteDAO {
 			}
 		} catch (Exception e) {
 			System.out.println("Erro ao verificar uso do CPF: " + cpfBuscado + "\nCausa: " + e.getMessage());
+
 		} finally {
 			Banco.closePreparedStatement(query);
 			Banco.closeConnection(conexao);
@@ -77,26 +67,17 @@ public class ClienteDAO {
 	public ClienteVO inserir(ClienteVO novoCliente) {
 		// CONECTAR AO BANCO
 		Connection conexao = Banco.getConnection();
-		String sql = " INSERT INTO CLIENTE(NOME, CPF," + " ATIVO, ID_ENDERECO) " + " VALUES (?, ?, ?, ?) ";
+		String sql = " INSERT INTO CLIENTE(NOME, CPF, ID_ENDERECO, ATIVO) " + " VALUES (?,?,?,?) ";
 
 		PreparedStatement query = Banco.getPreparedStatementWithPk(conexao, sql);
 
 		// EXECUTAR O INSERT
 		try {
-			if (novoCliente.getId() != null) {
-				query.setInt(4, novoCliente.getId());
-
-			} else {
-				query.setInt(4, 0);
-			}
-			// OU query.setInt(5, novoTelefone.getIdCliente() != null ?
-			// novoTelefone.getIdCliente() : 0);
-
 			query.setString(1, novoCliente.getNome());
 			query.setString(2, novoCliente.getCpf());
-			// query.setArray(3, novoCliente.getTelefones());
-			query.setBoolean(3, novoCliente.isAtivo());
-			query.setObject(4, novoCliente.getEndereco().getId());
+			query.setInt(3, novoCliente.getEndereco().getId());
+			query.setBoolean(4, novoCliente.isAtivo());
+			// query.setDate(5, java.sql.Date.valueOf(novoCliente.getDataNascimento()));
 
 			query.execute();
 
@@ -104,6 +85,11 @@ public class ClienteDAO {
 			ResultSet resultado = query.getGeneratedKeys();
 			if (resultado.next()) {
 				novoCliente.setId(resultado.getInt(1));
+			}
+
+			if (!novoCliente.getTelefones().isEmpty()) {
+				TelefoneDAO telefoneDAO = new TelefoneDAO();
+				telefoneDAO.ativarTelefones(novoCliente.getId(), novoCliente.getTelefones());
 			}
 
 		} catch (SQLException e) {
@@ -144,8 +130,10 @@ public class ClienteDAO {
 		Statement stmt = Banco.getStatement(conn);
 
 		int quantidadeLinhasAfetadas = 0;
+
 		try {
 			quantidadeLinhasAfetadas = stmt.executeUpdate(sql);
+
 		} catch (SQLException e) {
 			System.out.println("Erro ao excluir cliente.");
 			System.out.println("Erro: " + e.getMessage());
@@ -170,13 +158,14 @@ public class ClienteDAO {
 		try {
 			ResultSet resultado = query.executeQuery();
 
-			if (resultado.next()) {
+			while (resultado.next()) {
 				ClienteVO clienteBuscado = montarClienteComResultadoDoBanco(resultado);
 				clientes.add(clienteBuscado);
 			}
 
 		} catch (Exception e) {
 			System.out.println("Erro ao buscar todos os clientes. \n Causa:" + e.getMessage());
+
 		} finally {
 			Banco.closePreparedStatement(query);
 			Banco.closeConnection(conexao);
@@ -220,6 +209,7 @@ public class ClienteDAO {
 
 		} catch (Exception e) {
 			System.out.println("Erro contar os clientes que residem em um endereço. \n Causa:" + e.getMessage());
+			
 		} finally {
 			Banco.closePreparedStatement(query);
 			Banco.closeConnection(conexao);

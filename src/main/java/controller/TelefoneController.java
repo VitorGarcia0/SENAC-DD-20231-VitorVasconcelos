@@ -3,6 +3,7 @@ package controller;
 import java.util.List;
 
 import model.Exception.CampoInvalidoException;
+import model.Exception.TelefoneJaUtilizadoException;
 import model.bo.TelefoneBO;
 import model.vo.telefonia.TelefoneVO;
 
@@ -10,7 +11,7 @@ public class TelefoneController {
 	
 	private TelefoneBO bo = new TelefoneBO(); 
 
-	public TelefoneVO inserir(TelefoneVO novoTelefone) {
+	public TelefoneVO inserir(TelefoneVO novoTelefone) throws TelefoneJaUtilizadoException {
 		// TODO validar o preenchimento dos campos obrigatórios
 		return bo.inserir(novoTelefone);
 	}

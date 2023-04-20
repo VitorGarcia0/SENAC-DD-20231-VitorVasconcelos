@@ -16,6 +16,16 @@ import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
+/**
+ * Tela de Cadastro/ edição de Endereço
+ * O atributo 'endereco' que indica o que será feito
+ * - está nulo: cadastro
+ * - já veio preenchido no construtor: edição
+ * 
+ * @author vitor.vasconcelos
+ *
+ */
+
 public class TelaCadastroEndereco {
 
 	private JFrame frmCadastroDeEndereco;
@@ -32,9 +42,11 @@ public class TelaCadastroEndereco {
 	private JComboBox cbEstado;
 	private JButton btnSalvar;
 	
+	private EnderecoVO endereco;
+	
 	
 		// CHAMAR API ou BACKEND FUTURAMENTE
-	private String[] estados = {"Paraná", "Rio Grande do Sul", "SC"};
+	private String[] estados = {"PR", "RS", "SC"};
 	
 	/**
 	 * Launch the application.
@@ -43,7 +55,7 @@ public class TelaCadastroEndereco {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					TelaCadastroEndereco window = new TelaCadastroEndereco();
+					TelaCadastroEndereco window = new TelaCadastroEndereco(null);
 					window.frmCadastroDeEndereco.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -55,7 +67,7 @@ public class TelaCadastroEndereco {
 	/**
 	 * Create the application.
 	 */
-	public TelaCadastroEndereco() {
+	public TelaCadastroEndereco(EnderecoVO enderecoSelecionado) {
 		initialize();
 	}
 
@@ -150,6 +162,20 @@ public class TelaCadastroEndereco {
 		});
 		btnSalvar.setBounds(190, 170, 100, 23);
 		frmCadastroDeEndereco.getContentPane().add(btnSalvar);
+		
+		
+		//Preenche os campos na tela (binding)
+		if(endereco != null) {
+			txtCEP.setText(endereco.getCep());
+			txtRua.setText(endereco.getRua());
+			txtNumero.setText(endereco.getNumero());
+			txtCidade.setText(endereco.getCidade());
+			txtBairro.setText(endereco.getBairro());
+			
+			cbEstado.setSelectedItem(endereco.getEstado());
+		}
+		
+		frmCadastroDeEndereco.setVisible(true);
 		
 		
 	}
