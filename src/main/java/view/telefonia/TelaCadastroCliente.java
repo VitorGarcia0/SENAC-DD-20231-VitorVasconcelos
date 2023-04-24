@@ -57,13 +57,10 @@ public class TelaCadastroCliente {
 
 	/**
 	 * Create the application.
+	 * @param clienteSelecionado 
 	 * 
 	 * @throws ParseException
 	 */
-	public TelaCadastroCliente() throws ParseException {
-		initialize();
-	}
-
 	/**
 	 * Initialize the contents of the frame.
 	 * 

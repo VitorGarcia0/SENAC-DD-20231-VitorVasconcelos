@@ -4,11 +4,13 @@ import java.awt.EventQueue;
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 import controller.ClienteController;
 import controller.EnderecoController;
+import model.Exception.ClienteComTelefoneException;
 import model.vo.telefonia.ClienteVO;
 import model.vo.telefonia.EnderecoVO;
 import javax.swing.JButton;
@@ -36,12 +38,6 @@ public class TelaListagemClientes {
 
 	private void limparTabelaClientes() {
 		tblClientes.setModel(new DefaultTableModel(new Object[][] { nomesColunas, }, nomesColunas));
-		tblClientes = new JTable(tblClientes.getModel()) {
-			public boolean isCellEditable(int rowIndex, int colIndex) {
-				return false;
-			}
-		};
-		
 
 	}
 
@@ -99,40 +95,72 @@ public class TelaListagemClientes {
 		frmListagemClientes.setBounds(100, 100, 500, 400);
 		frmListagemClientes.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmListagemClientes.getContentPane().setLayout(null);
-
+		// TABELA DE CLIENTES
 		tblClientes = new JTable();
 		this.limparTabelaClientes();
 		tblClientes.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				int indiceSelecionado = tblClientes.getSelectedRow();
-				
-				if(indiceSelecionado > 0) {
+
+				if (indiceSelecionado > 0) {
 					btnEditar.setEnabled(true);
+					btnExcluir.setEnabled(true);
+					clienteSelecionado = clientes.get(indiceSelecionado - 1);
 				} else {
 					btnEditar.setEnabled(false);
+					btnExcluir.setEnabled(false);
 				}
-				
+
 			}
 		});
 
 		tblClientes.setBounds(20, 80, 444, 220);
 		frmListagemClientes.getContentPane().add(tblClientes);
 
+		// BOTÃO DE BUSCAR TODOS OS CLIENTES
 		btnBuscarTodos = new JButton("Buscar Todos");
+		btnBuscarTodos.setBounds(175, 25, 100, 35);
 		btnBuscarTodos.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				clientes = (ArrayList<ClienteVO>) clienteController.consultarTodos();
 				atualizarTabelaClientes();
 			}
 		});
-		btnBuscarTodos.setBounds(175, 25, 100, 35);
+	
 		frmListagemClientes.getContentPane().add(btnBuscarTodos);
 
 		btnEditar = new JButton("Editar");
+		btnEditar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int linhaSelecionadaNaTabela = tblClientes.getSelectedRow();
+				ClienteVO clienteSelecionado = clientes.get(linhaSelecionadaNaTabela - 1);
+
+				// TelaCadastroCliente telaEdicaoCliente = new TelaCadastroCliente(clienteSelecionado);
+			}
+		});
 		btnEditar.setBounds(129, 311, 90, 30);
 		frmListagemClientes.getContentPane().add(btnEditar);
 
 		btnExcluir = new JButton("Excluir");
+		btnExcluir.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int opcaoSelecionada = JOptionPane.showConfirmDialog(null,
+						"Confirma a exclusão do telefone selecionado?");
+
+				if (opcaoSelecionada == JOptionPane.YES_OPTION) {
+					try {
+						clienteController.excluir(clienteSelecionado.getId());
+						JOptionPane.showMessageDialog(null, "Cliente excluído com sucesso");
+						clientes = (ArrayList<ClienteVO>) clienteController.consultarTodos();
+						atualizarTabelaClientes();
+					} catch (ClienteComTelefoneException e1) {
+						JOptionPane.showConfirmDialog(null, e1.getMessage(), "Atenção", JOptionPane.WARNING_MESSAGE);
+					}
+				}
+			}
+		});
+
 		btnExcluir.setBounds(250, 311, 90, 30);
 		frmListagemClientes.getContentPane().add(btnExcluir);
 

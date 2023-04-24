@@ -3,6 +3,8 @@ package controller;
 import java.util.List;
 
 import model.Exception.CampoInvalidoException;
+import model.Exception.ClienteComTelefoneException;
+import model.Exception.CpfAlteradoException;
 import model.Exception.CpfJaUtilizadoException;
 import model.Exception.EnderecoInvalidoException;
 import model.bo.ClienteBO;
@@ -18,10 +20,7 @@ public class ClienteController {
 		this.validarCamposObrigatorios(novoCliente);
 
 		return bo.inserir(novoCliente);
-
 	}
-	
-	
 
 	private void validarCamposObrigatorios(ClienteVO cliente) throws CampoInvalidoException {
 		String mensagemValidacao = "";
@@ -67,7 +66,20 @@ public class ClienteController {
 	}
 
 	public List<ClienteVO> consultarTodos() {
-		
 		return bo.consultarTodos();
 	}
+	
+	public ClienteVO consultarPorId(int id) {
+		return bo.consultarPorId(id);
+	}
+	
+	public boolean atualizar(ClienteVO clienteAlterado) throws EnderecoInvalidoException, CpfAlteradoException {
+		return bo.atualizar(clienteAlterado);
+	}
+	
+	public boolean excluir(int id) throws ClienteComTelefoneException {
+		return bo.excluir(id);
+	}
+	
+	
 }
