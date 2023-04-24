@@ -15,12 +15,11 @@ import javax.swing.JComboBox;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.Color;
 
 /**
- * Tela de Cadastro/ edição de Endereço
- * O atributo 'endereco' que indica o que será feito
- * - está nulo: cadastro
- * - já veio preenchido no construtor: edição
+ * Tela de Cadastro/ edição de Endereço O atributo 'endereco' que indica o que
+ * será feito - está nulo: cadastro - já veio preenchido no construtor: edição
  * 
  * @author vitor.vasconcelos
  *
@@ -41,13 +40,12 @@ public class TelaCadastroEndereco {
 	private JLabel lblEstado;
 	private JComboBox cbEstado;
 	private JButton btnSalvar;
-	
+
 	private EnderecoVO endereco;
-	
-	
-		// CHAMAR API ou BACKEND FUTURAMENTE
-	private String[] estados = {"PR", "RS", "SC"};
-	
+
+	// CHAMAR API ou BACKEND FUTURAMENTE
+	private String[] estados = { "PR", "RS", "SC" };
+
 	/**
 	 * Launch the application.
 	 */
@@ -68,6 +66,7 @@ public class TelaCadastroEndereco {
 	 * Create the application.
 	 */
 	public TelaCadastroEndereco(EnderecoVO enderecoSelecionado) {
+		this.endereco = enderecoSelecionado;
 		initialize();
 	}
 
@@ -76,6 +75,9 @@ public class TelaCadastroEndereco {
 	 */
 	private void initialize() {
 		frmCadastroDeEndereco = new JFrame();
+		frmCadastroDeEndereco.getContentPane().setForeground(Color.WHITE);
+		frmCadastroDeEndereco.setForeground(Color.BLACK);
+		frmCadastroDeEndereco.getContentPane().setBackground(Color.WHITE);
 		frmCadastroDeEndereco.setTitle("Cadastro De Endereco");
 		frmCadastroDeEndereco.setBounds(100, 100, 535, 304);
 		frmCadastroDeEndereco.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -139,9 +141,17 @@ public class TelaCadastroEndereco {
 		btnSalvar = new JButton("Salvar");
 		btnSalvar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				EnderecoVO endereco = new EnderecoVO();
-				endereco.setRua(txtRua.getText());
+				boolean edicao = false;
+				if(endereco == null) {
+					//CADASTRO DE NOVO
+					endereco = new EnderecoVO();
+				} else {
+					// EDIÇÃO DO ENDEREÇO
+					edicao = true;
+				}
+				
 				endereco.setCep(txtCEP.getText());
+				endereco.setRua(txtRua.getText());
 				endereco.setNumero(txtNumero.getText());
 				endereco.setBairro(txtBairro.getText());;
 				endereco.setCidade(txtCidade.getText());
@@ -149,22 +159,27 @@ public class TelaCadastroEndereco {
 				
 				EnderecoController controller = new EnderecoController();
 				try {
-					controller.inserir(endereco);
-					JOptionPane.showMessageDialog(null, "Endereço salvo com sucesso", "Sucesso",
-							JOptionPane.INFORMATION_MESSAGE);
+					// SE FOR EDICAO, PARA ATUALIZAR OU CADASTRAR UM NOVO
+					if(edicao) {
+						controller.atualizar(endereco);
+					} else {
+						controller.inserir(endereco);
+						limparTela();
+					}
+					JOptionPane.showMessageDialog(null, "Endereço: " + (edicao ? " atualizado " : " criado ") +  " com sucesso!",
+							"Sucesso", JOptionPane.INFORMATION_MESSAGE);
 				} catch (CampoInvalidoException e1) {
 					JOptionPane.showMessageDialog(null, 
 							"Preencha os seguintes campos: \n\n" + e1.getMessage(), 
 							"Atenção", JOptionPane.WARNING_MESSAGE);
 				}
-				System.out.println("Clicou");
 			}
 		});
 		btnSalvar.setBounds(190, 170, 100, 23);
 		frmCadastroDeEndereco.getContentPane().add(btnSalvar);
 		
 		
-		//Preenche os campos na tela (binding)
+		//Preenche os campos na tela (binding) 
 		if(endereco != null) {
 			txtCEP.setText(endereco.getCep());
 			txtRua.setText(endereco.getRua());
@@ -173,10 +188,18 @@ public class TelaCadastroEndereco {
 			txtBairro.setText(endereco.getBairro());
 			
 			cbEstado.setSelectedItem(endereco.getEstado());
+				
 		}
-		
 		frmCadastroDeEndereco.setVisible(true);
-		
-		
+	}
+
+	protected void limparTela() {
+		this.endereco = null;
+		txtCEP.setText("");
+		txtRua.setText("");
+		txtNumero.setText("");
+		txtCidade.setText("");
+		txtBairro.setText("");
+		cbEstado.setSelectedItem(null);
 	}
 }

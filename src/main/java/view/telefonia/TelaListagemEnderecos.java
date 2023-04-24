@@ -29,6 +29,7 @@ public class TelaListagemEnderecos {
 
 	// LISTA PARA ARMAZENAR OS ENDEREÇOS CONSULTADOS
 	private ArrayList<EnderecoVO> enderecos;
+	
 	// OBJ USADO PARA ARMAZENAR O ENDEREÇO QUE FOR SELECIONADO NA (TBLENDERECOS);
 	private EnderecoVO enderecoSelecionado;
 	private EnderecoController enderecoController = new EnderecoController();
@@ -36,12 +37,12 @@ public class TelaListagemEnderecos {
 	private void limparTabela() {
 		tblEnderecos.setModel(new DefaultTableModel(new Object[][] { nomesColunas, }, nomesColunas));
 	}
-
+	// CHAMAR SEMPRE NO BUSCAR
 	private void atualizarTabelaEnderecos() {
 		this.limparTabela();
 
-		EnderecoController controller = new EnderecoController();
-		enderecos = (ArrayList<EnderecoVO>) controller.consultarTodos();
+		enderecoController = new EnderecoController();
+		enderecos = (ArrayList<EnderecoVO>) enderecoController.consultarTodos();
 
 		DefaultTableModel model = (DefaultTableModel) tblEnderecos.getModel();
 		// Preenche os valores na tabela linha a linha
@@ -93,14 +94,10 @@ public class TelaListagemEnderecos {
 		frmListagemEnderecos.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmListagemEnderecos.getContentPane().setLayout(null);
 
-		tblEnderecos = new JTable();
-		tblEnderecos.setBounds(25, 50, 430, 250);
-		frmListagemEnderecos.getContentPane().add(tblEnderecos);
-
 		btnBuscarTodos = new JButton("Buscar Todos");
 		btnBuscarTodos.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
+				atualizarTabelaEnderecos();
 			}
 		});
 		btnBuscarTodos.setBounds(175, 10, 100, 30);
@@ -145,7 +142,7 @@ public class TelaListagemEnderecos {
 
 		tblEnderecos = new JTable();
 		this.limparTabela();
-		tblEnderecos.setBounds(15, 70, 655, 350);
+		tblEnderecos.setBounds(15, 70, 459, 234);
 
 		// Evento de clique em uma linha da tabela
 		// Habilita/desabilita os botões "Editar" e "Excluir"
