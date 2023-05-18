@@ -99,6 +99,10 @@ public class EnderecoVO {
 		return rua + " nº" + numero + ", " + bairro + ", " + cidade + "/" + estado;
 	}
 	
+	public String getEnderecoResumido() {
+		return rua + " nº" + numero + ", " + bairro + ", " + cidade + "/" + estado;
+	}
+	
 	
 	
 }
