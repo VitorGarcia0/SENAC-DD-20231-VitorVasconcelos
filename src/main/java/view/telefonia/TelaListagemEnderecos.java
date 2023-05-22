@@ -20,29 +20,32 @@ import java.awt.event.ActionEvent;
 
 public class TelaListagemEnderecos {
 
+	// Atributos da tela (componentes visuais)
 	private JFrame frmListagemEnderecos;
 	private JTable tblEnderecos;
+	private JButton btnBuscar;
 	private JButton btnEditar;
 	private JButton btnExcluir;
-	private JButton btnBuscarTodos;
-	private String[] nomesColunas = { "#", "CEP", "Rua", "Número", "Bairro", "Cidade", "Estado" };
 
 	// LISTA PARA ARMAZENAR OS ENDEREÇOS CONSULTADOS
 	private ArrayList<EnderecoVO> enderecos;
-	
-	// OBJ USADO PARA ARMAZENAR O ENDEREÇO QUE FOR SELECIONADO NA (TBLENDERECOS);
+	private String[] nomesColunas = { "#", "CEP", "Rua", "Número", "Bairro", "Cidade", "Estado" };
+
+	// Objeto usado para armazenar o endereço que o usuário selecionar na tabela
+	// (tblEnderecos)
 	private EnderecoVO enderecoSelecionado;
 	private EnderecoController enderecoController = new EnderecoController();
 
 	private void limparTabela() {
 		tblEnderecos.setModel(new DefaultTableModel(new Object[][] { nomesColunas, }, nomesColunas));
 	}
+
 	// CHAMAR SEMPRE NO BUSCAR
 	private void atualizarTabelaEnderecos() {
 		this.limparTabela();
 
-		enderecoController = new EnderecoController();
-		enderecos = (ArrayList<EnderecoVO>) enderecoController.consultarTodos();
+		EnderecoController controller = new EnderecoController();
+		enderecos = (ArrayList<EnderecoVO>) controller.consultarTodos();
 
 		DefaultTableModel model = (DefaultTableModel) tblEnderecos.getModel();
 		// Preenche os valores na tabela linha a linha
@@ -94,14 +97,14 @@ public class TelaListagemEnderecos {
 		frmListagemEnderecos.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmListagemEnderecos.getContentPane().setLayout(null);
 
-		btnBuscarTodos = new JButton("Buscar Todos");
-		btnBuscarTodos.addActionListener(new ActionListener() {
+		btnBuscar = new JButton("Buscar");
+		btnBuscar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				atualizarTabelaEnderecos();
 			}
 		});
-		btnBuscarTodos.setBounds(175, 10, 100, 30);
-		frmListagemEnderecos.getContentPane().add(btnBuscarTodos);
+		btnBuscar.setBounds(175, 10, 100, 30);
+		frmListagemEnderecos.getContentPane().add(btnBuscar);
 
 		btnEditar = new JButton("Editar");
 		btnEditar.addActionListener(new ActionListener() {

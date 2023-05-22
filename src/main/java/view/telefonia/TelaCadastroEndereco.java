@@ -18,8 +18,10 @@ import java.awt.event.ActionEvent;
 import java.awt.Color;
 
 /**
- * Tela de Cadastro/ edição de Endereço O atributo 'endereco' que indica o que
- * será feito - está nulo: cadastro - já veio preenchido no construtor: edição
+ * Tela de Cadastro/ edição de Endereço
+ *  O atributo 'endereco' que indica o que será feito
+ *  - está nulo: cadastro  
+ *  - já veio preenchido no construtor: edição
  * 
  * @author vitor.vasconcelos
  *
