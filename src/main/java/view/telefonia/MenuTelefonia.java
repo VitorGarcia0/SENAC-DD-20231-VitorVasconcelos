@@ -60,6 +60,9 @@ public class MenuTelefonia extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				painelCadastroCliente = new PainelCadastroCliente(null);
 				painelCadastroCliente.setVisible(true);
+				registrarCliqueBotaoVoltarDoPainelCadastroCliente();
+
+				// Atuliza a tela principal
 				frmSistemaDeTelefonia.setContentPane(painelCadastroCliente);
 				frmSistemaDeTelefonia.pack();
 			}
@@ -72,18 +75,12 @@ public class MenuTelefonia extends JPanel {
 		mntmListarCliente.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				painelListagemCliente = new PainelListagemCliente();
-				painelListagemCliente.getBtnEditar().addActionListener(new ActionListener() {
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						painelCadastroCliente = new PainelCadastroCliente(
-								painelListagemCliente.getClienteSelecionado());
-						painelCadastroCliente.setVisible(true);
-						frmSistemaDeTelefonia.setContentPane(painelCadastroCliente);
-						frmSistemaDeTelefonia.pack();
-					}
-				});
 				painelListagemCliente.setVisible(true);
+				registrarCliqueBotaoEditarDoPainelListagemCliente();
+
 				frmSistemaDeTelefonia.setContentPane(painelListagemCliente);
+				// Atualiza a tela principal
+				frmSistemaDeTelefonia.revalidate();
 			}
 		});
 		mntmListarCliente.setIcon(new ImageIcon(MenuTelefonia.class.getResource("/icones/IconeListagemClientes.png")));
@@ -94,8 +91,7 @@ public class MenuTelefonia extends JPanel {
 		menuBar.add(mnTelefone);
 
 		JMenuItem mntmCadastroTelefone = new JMenuItem("Cadastro");
-		mntmCadastroTelefone
-				.setIcon(new ImageIcon(MenuTelefonia.class.getResource("/icones/TelefoneAdicionar.png")));
+		mntmCadastroTelefone.setIcon(new ImageIcon(MenuTelefonia.class.getResource("/icones/TelefoneAdicionar.png")));
 		mnTelefone.add(mntmCadastroTelefone);
 
 		JMenuItem mntmListagemTelefone = new JMenuItem("Listagem");
@@ -104,6 +100,8 @@ public class MenuTelefonia extends JPanel {
 				// Evento de clique no botão -> instancia o painel e troca
 				PainelListagemTelefone painelListagemTelefone = new PainelListagemTelefone();
 				frmSistemaDeTelefonia.setContentPane(painelListagemTelefone);
+				// Atualiza a tela principal
+				frmSistemaDeTelefonia.revalidate();
 			}
 		});
 		mntmListagemTelefone.setIcon(new ImageIcon(MenuTelefonia.class.getResource("/icones/IconeTelefone.png")));
@@ -129,8 +127,47 @@ public class MenuTelefonia extends JPanel {
 				JOptionPane.showMessageDialog(null, "Olá");
 			}
 		});
-		//mnSobre.setIcon(new ImageIcon(MenuTelefonia.class.getResource("/icones/icons8-sobre-48.png")));
+		// mnSobre.setIcon(new
+		// ImageIcon(MenuTelefonia.class.getResource("/icones/icons8-sobre-48.png")));
 		menuBar.add(mnSobre);
+	}
+
+	protected void registrarCliqueBotaoEditarDoPainelListagemCliente() {
+		// Registro de ouvinte para o clique em um botão de um painel
+		painelListagemCliente.getBtnEditar().addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				painelCadastroCliente = new PainelCadastroCliente(painelListagemCliente.getClienteSelecionado());
+				painelCadastroCliente.setVisible(true);
+				registrarCliqueBotaoVoltarDoPainelCadastroCliente();
+
+				// Atualiza a tela principal
+				frmSistemaDeTelefonia.setContentPane(painelCadastroCliente);
+				frmSistemaDeTelefonia.revalidate();
+			}
+		});
+	}
+
+	protected void registrarCliqueBotaoVoltarDoPainelCadastroCliente() {
+		if (painelCadastroCliente == null) {
+			painelCadastroCliente = new PainelCadastroCliente(null);
+		}
+
+		// Registrar o evento de clique no voltar do PainelCadastroCliente
+		painelCadastroCliente.getBtnVoltar().addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// Lógica do clique no botão Voltar
+				// Mostra o painel de listagem de clientes
+				painelListagemCliente = new PainelListagemCliente();
+				painelListagemCliente.setVisible(true);
+				registrarCliqueBotaoEditarDoPainelListagemCliente();
+				frmSistemaDeTelefonia.setContentPane(painelListagemCliente);
+				frmSistemaDeTelefonia.revalidate();
+			}
+		});
+
 	}
 
 }

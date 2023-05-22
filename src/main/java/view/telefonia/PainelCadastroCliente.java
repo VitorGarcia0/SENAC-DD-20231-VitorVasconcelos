@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.ParseException;
 
+import javax.swing.AbstractButton;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
@@ -130,6 +131,10 @@ public class PainelCadastroCliente extends JPanel {
 		this.txtCPF.setText(this.cliente.getCpf());
 		this.txtNome.setText(this.cliente.getNome());
 		this.cbEndereco.setSelectedItem(this.cliente.getEndereco());
+	}
+
+	public JButton getBtnVoltar() {
+		return btnVoltar;
 	}
 
 }
