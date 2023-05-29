@@ -27,6 +27,7 @@ import model.Exception.ClienteComTelefoneException;
 import model.seletor.ClienteSeletor;
 import model.vo.telefonia.ClienteVO;
 import javax.swing.JToggleButton;
+import javax.swing.SwingConstants;
 
 public class PainelListagemCliente extends JPanel {
 
@@ -49,10 +50,20 @@ public class PainelListagemCliente extends JPanel {
 	private JLabel lblNome;
 	private JLabel lblDataNascimentoDe;
 	private JLabel lblAte;
-
+	private JLabel lblPaginacao;
+	
 	private ClienteController controller = new ClienteController();
 	private ClienteVO clienteSelecionado;
-	private JLabel lblPaginacao;
+	
+	// Atributos para a paginação
+	
+	private final int TAMANHO_PAGINA = 5;
+	private int paginaAtual = 1;
+	private int totalPaginas = 0;
+	private JButton btnAvancarPagina;
+	private JButton btnVoltarPagina;
+	private ClienteSeletor seletor = new ClienteSeletor();
+	
 
 	private void limparTabelaClientes() {
 		tblClientes.setModel(new DefaultTableModel(new Object[][] { nomesColunas, }, nomesColunas));
@@ -211,28 +222,28 @@ public class PainelListagemCliente extends JPanel {
 			}
 		});
 		this.add(btnExcluir);
-
-		JButton btnVoltarPagina = new JButton("<< Voltar");
+		// BOTÕES DE VOLTAR E AVANÇAR PÁGINA
+		btnVoltarPagina = new JButton("<< Voltar");
 		btnVoltarPagina.setEnabled(false);
 		btnVoltarPagina.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				paginaAtual--;
 				buscarClientesComFiltros();
 				lblPaginacao.setText(paginaAtual + " / " + totalPaginas);
-
 				btnVoltarPagina.setEnabled(paginaAtual > 1);
+				btnAvancarPagina.setEnabled(paginaAtual < totalPaginas);
 			}
 		});
+		btnVoltarPagina.setEnabled(false);
 		btnVoltarPagina.setBounds(145, 342, 104, 23);
 		add(btnVoltarPagina);
 
-		JButton btnAvancarPagina = new JButton("Avançar >>");
+		btnAvancarPagina = new JButton("Avançar >>");
 		btnAvancarPagina.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				paginaAtual++;
 				buscarClientesComFiltros();
-				lblPaginacao.setText(paginaAtual + " /TOTAL");
-
+				lblPaginacao.setText(paginaAtual + " / " + totalPaginas);
 				btnVoltarPagina.setEnabled(paginaAtual > 1);
 				btnAvancarPagina.setEnabled(paginaAtual < totalPaginas);
 			}
@@ -240,10 +251,52 @@ public class PainelListagemCliente extends JPanel {
 		btnAvancarPagina.setBounds(396, 342, 110, 23);
 		add(btnAvancarPagina);
 
-		lblPaginacao = new JLabel("Paginacao");
-		lblPaginacao.setBounds(295, 346, 77, 14);
+		lblPaginacao = new JLabel("1 / " + totalPaginas);
+		lblPaginacao.setHorizontalAlignment(SwingConstants.CENTER);
+		lblPaginacao.setBounds(283, 323, 105, 14);
 		add(lblPaginacao);
+		
+		atualizarQuantidadePaginas();
 	}
+	
+	private void atualizarQuantidadePaginas() {
+		//Cálculo do total de páginas (poderia ser feito no backend)
+		int totalRegistros = controller.contarTotalRegistrosComFiltros(seletor);
+		
+		//QUOCIENTE da divisão inteira
+		totalPaginas = totalRegistros / TAMANHO_PAGINA;
+		
+		//RESTO da divisão inteira
+		if(totalRegistros % TAMANHO_PAGINA > 0) { 
+			totalPaginas++;
+		}
+		
+		lblPaginacao.setText(paginaAtual + " / " + totalPaginas);
+	}
+	
+	protected void buscarClientesComFiltros() {
+		seletor = new ClienteSeletor();
+		seletor.setLimite(TAMANHO_PAGINA);
+		seletor.setPagina(paginaAtual);
+		seletor.setNome(txtNome.getText());
+		
+		String cpfSemMascara;
+		try {
+			cpfSemMascara = (String) mascaraCpf.stringToValue(
+					txtCPF.getText());
+			seletor.setCpf(cpfSemMascara);
+		} catch (ParseException e1) {
+			// TODO Auto-generated catch block
+			//e1.printStackTrace();
+		}
+		
+		seletor.setDataNascimentoInicial(dtNascimentoInicial.getDate());
+		seletor.setDataNascimentoFinal(dtNascimentoFinal.getDate());
+		clientes = (ArrayList<ClienteVO>) controller.consultarComFiltros(seletor);
+		atualizarTabelaClientes();
+		atualizarQuantidadePaginas();
+	}
+
 
 	// Torna o btnEditar acessível externamente à essa classe
 	public JButton getBtnEditar() {

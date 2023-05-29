@@ -87,8 +87,8 @@ public class ClienteController {
 		return bo.consultarComFiltros(seletor);
 	}
 	
-	public int contarTotalRegistros() {
-		return bo.contarTotalRegistros();
+	public int contarTotalRegistrosComFiltros(ClienteSeletor seletor) {
+		return bo.contarTotalRegistrosComFiltros(seletor);
 	}
 	
 }

@@ -98,8 +98,8 @@ public class ClienteBO {
 		return dao.consultarComFiltros(seletor);
 	}
 	
-	public int contarTotalRegistros() {
-		return dao.contarTotalRegistrosComFiltro();
+	public int contarTotalRegistrosComFiltros(ClienteSeletor seletor) {
+		return dao.contarTotalRegistrosComFiltros(seletor);
 	}
 
 }

@@ -227,10 +227,10 @@ public class ClienteDAO {
 		if (seletor.temFiltro()) {
 			sql = preencherFiltros(sql, seletor);
 		}
-		
-		if(seletor.temPaginacao()) {
-		//	sql += " LIMIT " + seletor.getLimite() + 
-			//		" OFFSET " + seletor.getOffset();
+
+		if (seletor.temPaginacao()) {
+			// sql += " LIMIT " + seletor.getLimite() +
+			// " OFFSET " + seletor.getOffset();
 		}
 
 		PreparedStatement query = Banco.getPreparedStatement(conexao, sql);
@@ -276,29 +276,42 @@ public class ClienteDAO {
 			primeiro = false;
 		}
 
-		if (seletor.getDataNascimentoInicial() != null) {
+		if (seletor.getDataNascimentoInicial() != null && seletor.getDataNascimentoFinal() != null) {
 			if (primeiro) {
 				sql += " WHERE ";
 			} else {
 				sql += " AND ";
 			}
-			sql += " dataNascimento LIKE '%" + seletor.getDataNascimentoInicial() + "%'";
+			sql += " DT_NASCIMENTO BETWEEN '" + seletor.getDataNascimentoInicial() + "' " + " AND '"
+					+ seletor.getDataNascimentoFinal() + "' ";
 			primeiro = false;
-		}
-		
-		if (seletor.getDataNascimentoFinal() != null) {
-			if (primeiro) {
-				sql += " WHERE ";
-			} else {
-				sql += " AND ";
+		} else {
+			if (seletor.getDataNascimentoInicial() != null) {
+				if (primeiro) {
+					sql += " WHERE ";
+				} else {
+					sql += " AND ";
+				}
+				// CLIENTES QUE NASCERAM 'A PARTIR' DA DATA INICIAL
+				sql += " DT_NASCIMENTO >= '" + seletor.getDataNascimentoInicial() + "' ";
+				primeiro = false;
 			}
-			sql += " dataNascimento LIKE '%" + seletor.getDataNascimentoFinal() + "%'" + "'  '";
-			primeiro = false;
+
+			if (seletor.getDataNascimentoFinal() != null) {
+				if (primeiro) {
+					sql += " WHERE ";
+				} else {
+					sql += " AND ";
+				}
+				// CLIENTES QUE NASCERAM 'ATÉ' A DATA FINAL
+				sql += " DT_NASCIMENTO <= '" + seletor.getDataNascimentoFinal() + "' ";
+				primeiro = false;
+			}
 		}
 
 		return sql;
 	}
-	
+
 	public int contarTotalRegistrosComFiltro(ClienteSeletor seletor) {
 		int total = 0;
 		Connection conexao = Banco.getConnection();
@@ -313,8 +326,7 @@ public class ClienteDAO {
 			}
 
 		} catch (Exception e) {
-			System.out.println("Erro ao contar o total de clientes "
-					+ " \n Causa:" + e.getMessage());
+			System.out.println("Erro ao contar o total de clientes " + " \n Causa:" + e.getMessage());
 
 		} finally {
 			Banco.closePreparedStatement(query);
@@ -322,7 +334,33 @@ public class ClienteDAO {
 		}
 
 		return total;
-	
+
 	}
-	
+
+	public int contarTotalRegistrosComFiltros(ClienteSeletor seletor) {
+		int total = 0;
+		Connection conexao = Banco.getConnection();
+		String sql = " select count(*) from cliente ";
+
+		if (seletor.temFiltro()) {
+			sql = preencherFiltros(sql, seletor);
+		}
+
+		PreparedStatement query = Banco.getPreparedStatement(conexao, sql);
+		try {
+			ResultSet resultado = query.executeQuery();
+
+			if (resultado.next()) {
+				total = resultado.getInt(1);
+			}
+		} catch (Exception e) {
+			System.out.println("Erro contar o total de clientes" + "\n Causa:" + e.getMessage());
+		} finally {
+			Banco.closePreparedStatement(query);
+			Banco.closeConnection(conexao);
+		}
+
+		return total;
+	}
+
 }
