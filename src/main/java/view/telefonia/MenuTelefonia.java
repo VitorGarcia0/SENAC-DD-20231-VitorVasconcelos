@@ -45,7 +45,7 @@ public class MenuTelefonia extends JPanel {
 	private void initialize() {
 		frmSistemaDeTelefonia = new JFrame();
 		frmSistemaDeTelefonia.setTitle("Sistema de Telefonia");
-		frmSistemaDeTelefonia.setBounds(100, 100, 650, 500);
+		frmSistemaDeTelefonia.setBounds(100, 100, 522, 471);
 		frmSistemaDeTelefonia.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		JMenuBar menuBar = new JMenuBar();

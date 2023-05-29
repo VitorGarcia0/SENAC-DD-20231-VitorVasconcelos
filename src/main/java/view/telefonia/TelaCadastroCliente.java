@@ -66,6 +66,7 @@ public class TelaCadastroCliente {
 	 * 
 	 * @throws ParseException
 	 */
+	@SuppressWarnings("unused")
 	private void initialize() throws ParseException {
 		frmCadastroDeCliente = new JFrame();
 		frmCadastroDeCliente.getContentPane().setBackground(new Color(255, 255, 255));
