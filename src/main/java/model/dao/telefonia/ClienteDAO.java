@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import model.Banco;
+import model.seletor.ClienteSeletor;
 import model.vo.telefonia.ClienteVO;
 import model.vo.telefonia.EnderecoVO;
 
@@ -209,7 +210,7 @@ public class ClienteDAO {
 
 		} catch (Exception e) {
 			System.out.println("Erro contar os clientes que residem em um endereço. \n Causa:" + e.getMessage());
-			
+
 		} finally {
 			Banco.closePreparedStatement(query);
 			Banco.closeConnection(conexao);
@@ -217,4 +218,111 @@ public class ClienteDAO {
 
 		return totalClientesDoEnderecoBuscado;
 	}
+
+	public List<ClienteVO> consultarComFiltros(ClienteSeletor seletor) {
+		List<ClienteVO> clientes = new ArrayList<ClienteVO>();
+		Connection conexao = Banco.getConnection();
+		String sql = " select * from cliente ";
+
+		if (seletor.temFiltro()) {
+			sql = preencherFiltros(sql, seletor);
+		}
+		
+		if(seletor.temPaginacao()) {
+		//	sql += " LIMIT " + seletor.getLimite() + 
+			//		" OFFSET " + seletor.getOffset();
+		}
+
+		PreparedStatement query = Banco.getPreparedStatement(conexao, sql);
+		try {
+			ResultSet resultado = query.executeQuery();
+
+			while (resultado.next()) {
+				ClienteVO clienteBuscado = montarClienteComResultadoDoBanco(resultado);
+				clientes.add(clienteBuscado);
+			}
+
+		} catch (Exception e) {
+			System.out.println("Erro ao buscar todos os clientes. \n Causa:" + e.getMessage());
+		} finally {
+			Banco.closePreparedStatement(query);
+			Banco.closeConnection(conexao);
+		}
+
+		return clientes;
+	}
+
+	private String preencherFiltros(String sql, ClienteSeletor seletor) {
+
+		boolean primeiro = true;
+		if (seletor.getNome() != null && !seletor.getNome().trim().isEmpty()) {
+			if (primeiro) {
+				sql += " WHERE ";
+			} else {
+				sql += " AND ";
+			}
+
+			sql += " nome LIKE '%" + seletor.getNome() + "%'";
+			primeiro = false;
+		}
+
+		if (seletor.getCpf() != null && !seletor.getCpf().trim().isEmpty()) {
+			if (primeiro) {
+				sql += " WHERE ";
+			} else {
+				sql += " AND ";
+			}
+			sql += " cpf LIKE '%" + seletor.getCpf() + "%'";
+			primeiro = false;
+		}
+
+		if (seletor.getDataNascimentoInicial() != null) {
+			if (primeiro) {
+				sql += " WHERE ";
+			} else {
+				sql += " AND ";
+			}
+			sql += " dataNascimento LIKE '%" + seletor.getDataNascimentoInicial() + "%'";
+			primeiro = false;
+		}
+		
+		if (seletor.getDataNascimentoFinal() != null) {
+			if (primeiro) {
+				sql += " WHERE ";
+			} else {
+				sql += " AND ";
+			}
+			sql += " dataNascimento LIKE '%" + seletor.getDataNascimentoFinal() + "%'" + "'  '";
+			primeiro = false;
+		}
+
+		return sql;
+	}
+	
+	public int contarTotalRegistrosComFiltro(ClienteSeletor seletor) {
+		int total = 0;
+		Connection conexao = Banco.getConnection();
+		String sql = " select count(*) from cliente ";
+
+		PreparedStatement query = Banco.getPreparedStatement(conexao, sql);
+		try {
+			ResultSet resultado = query.executeQuery();
+
+			if (resultado.next()) {
+				total = resultado.getInt(1);
+			}
+
+		} catch (Exception e) {
+			System.out.println("Erro ao contar o total de clientes "
+					+ " \n Causa:" + e.getMessage());
+
+		} finally {
+			Banco.closePreparedStatement(query);
+			Banco.closeConnection(conexao);
+		}
+
+		return total;
+	
+	}
+	
 }

@@ -1,5 +1,6 @@
 package model.bo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import model.Exception.ClienteComTelefoneException;
@@ -7,6 +8,7 @@ import model.Exception.CpfAlteradoException;
 import model.Exception.CpfJaUtilizadoException;
 import model.Exception.EnderecoInvalidoException;
 import model.dao.telefonia.ClienteDAO;
+import model.seletor.ClienteSeletor;
 import model.vo.telefonia.ClienteVO;
 
 public class ClienteBO {
@@ -40,17 +42,15 @@ public class ClienteBO {
 
 	public boolean atualizar(ClienteVO clienteAlterado) throws EnderecoInvalidoException, CpfAlteradoException {
 		ClienteVO clienteOriginal = dao.consultarPorId(clienteAlterado.getId());
-		
-		if(clienteAlterado.getCpf() != clienteOriginal.getCpf()) {
+
+		if (clienteAlterado.getCpf() != clienteOriginal.getCpf()) {
 			throw new CpfAlteradoException("CPF não pode ser alterado");
 		}
-		
+
 		validarEndereco(clienteAlterado);
 
 		return dao.atualizar(clienteAlterado);
-	} 
-			
-	
+	}
 
 	/**
 	 * não deixar excluir cliente que possua telefone associado Criar exceção
@@ -66,7 +66,7 @@ public class ClienteBO {
 		// não deixar excluir cliente que possua telefone associado
 		// Criar exceção ClienteComTelefoneException
 		ClienteVO clienteBuscado = new ClienteVO();
-		
+
 		if (!clienteBuscado.getTelefones().isEmpty()) {
 			throw new ClienteComTelefoneException("O cliente possui telefone(s), não pode excluir ");
 
@@ -75,22 +75,31 @@ public class ClienteBO {
 		return dao.excluir(id);
 
 	}
-	
+
 	public ClienteVO consultarPorId(int id) {
-		
+
 		return dao.consultarPorId(id);
 	}
 
 	public List<ClienteVO> consultarTodos() {
-		
+
 		return dao.consultarTodos();
 	}
-	
-	private void validarEndereco(ClienteVO cliente) throws EnderecoInvalidoException {
-		if(cliente.getEndereco() == null 
-				|| cliente.getEndereco().getId() == null) {
+
+		private void validarEndereco(ClienteVO cliente) throws EnderecoInvalidoException {
+		if (cliente.getEndereco() == null || cliente.getEndereco().getId() == null) {
 			throw new EnderecoInvalidoException("Endereço não informado");
 		}
+	}
+
+	public List<ClienteVO> consultarComFiltros(ClienteSeletor seletor) {
+		// TODO validar CPF e as datas informadas
+
+		return dao.consultarComFiltros(seletor);
+	}
+	
+	public int contarTotalRegistros() {
+		return dao.contarTotalRegistrosComFiltro();
 	}
 
 }

@@ -24,7 +24,9 @@ import com.github.lgooddatepicker.components.DatePicker;
 
 import controller.ClienteController;
 import model.Exception.ClienteComTelefoneException;
+import model.seletor.ClienteSeletor;
 import model.vo.telefonia.ClienteVO;
+import javax.swing.JToggleButton;
 
 public class PainelListagemCliente extends JPanel {
 
@@ -34,23 +36,24 @@ public class PainelListagemCliente extends JPanel {
 	private JTextField txtNome;
 	private MaskFormatter mascaraCpf;
 	private JFormattedTextField txtCPF;
-	
-	//componentes externos -> dependência "LGoodDatePicker" foi adicionada no pom.xml
+
+	// componentes externos -> dependência "LGoodDatePicker" foi adicionada no
+	// pom.xml
 	private DatePicker dtNascimentoInicial;
 	private DatePicker dtNascimentoFinal;
 	private JButton btnEditar;
 	private JButton btnBuscar;
-	private JButton btnBuscarTodos;
 	private JButton btnGerarPlanilha;
 	private JButton btnExcluir;
 	private JLabel lblCpf;
 	private JLabel lblNome;
 	private JLabel lblDataNascimentoDe;
 	private JLabel lblAte;
-	
+
 	private ClienteController controller = new ClienteController();
 	private ClienteVO clienteSelecionado;
-	
+	private JLabel lblPaginacao;
+
 	private void limparTabelaClientes() {
 		tblClientes.setModel(new DefaultTableModel(new Object[][] { nomesColunas, }, nomesColunas));
 	}
@@ -71,29 +74,37 @@ public class PainelListagemCliente extends JPanel {
 			model.addRow(novaLinhaDaTabela);
 		}
 	}
+
 	public PainelListagemCliente() {
 		this.setLayout(null);
 
-		btnBuscar = new JButton("Buscar (em construção...)");
-		btnBuscar.setBackground(new Color(255, 0, 255));
+		btnBuscar = new JButton("Buscar COM FILTROS");
+		btnBuscar.setBackground(new Color(255, 128, 192));
 		btnBuscar.setForeground(new Color(0, 0, 0));
-		btnBuscar.setEnabled(false);
 		btnBuscar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//TODO descomentar na aula 11
-//				ClienteSeletor seletor = new ClienteSeletor();
-//				seletor.setNome(txtNome.getText());
-//				seletor.setSobrenome(txtSobrenome.getText());
-//				seletor.setDataNascimentoInicial(dtNascimentoInicial.getDate());
-//				seletor.setDataNascimentoFinal(dtNascimentoFinal.getDate());
-//				clientes = controller.listarClientes(seletor);
+				ClienteSeletor seletor = new ClienteSeletor();
+				seletor.setNome(txtNome.getText());
+
+				String cpfSemMascara;
+				try {
+					cpfSemMascara = (String) mascaraCpf.stringToValue(txtCPF.getText());
+					seletor.setCpf(cpfSemMascara);
+				} catch (ParseException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+
+				seletor.setDataNascimentoInicial(dtNascimentoInicial.getDate());
+				seletor.setDataNascimentoFinal(dtNascimentoFinal.getDate());
+				clientes = (ArrayList<ClienteVO>) controller.consultarComFiltros(seletor);
 
 				atualizarTabelaClientes();
 			}
 		});
-		btnBuscar.setBounds(285, 125, 200, 35);
+		btnBuscar.setBounds(160, 125, 450, 35);
 		this.add(btnBuscar);
-		
+
 		tblClientes = new JTable();
 		this.limparTabelaClientes(); // Adicionei essa linha
 
@@ -112,7 +123,7 @@ public class PainelListagemCliente extends JPanel {
 				}
 			}
 		});
-		tblClientes.setBounds(25, 164, 650, 256);
+		tblClientes.setBounds(25, 164, 650, 158);
 		this.add(tblClientes);
 
 		lblNome = new JLabel("Nome:");
@@ -164,8 +175,8 @@ public class PainelListagemCliente extends JPanel {
 				int opcaoSelecionada = janelaSelecaoDestinoArquivo.showSaveDialog(null);
 				if (opcaoSelecionada == JFileChooser.APPROVE_OPTION) {
 					String caminhoEscolhido = janelaSelecaoDestinoArquivo.getSelectedFile().getAbsolutePath();
-					//TODO decomentar na aula 11
-					//controller.gerarRelatorio(clientes, caminhoEscolhido);
+					// TODO decomentar na aula 11
+					// controller.gerarRelatorio(clientes, caminhoEscolhido);
 				}
 			}
 		});
@@ -176,27 +187,18 @@ public class PainelListagemCliente extends JPanel {
 		btnEditar.setBounds(250, 500, 200, 45);
 		btnEditar.setEnabled(false);
 		this.add(btnEditar);
-		
-		btnBuscarTodos = new JButton("Buscar todos");
-		btnBuscarTodos.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				clientes = (ArrayList<ClienteVO>) controller.consultarTodos();
-				atualizarTabelaClientes();
-			}
-		});
-		btnBuscarTodos.setBounds(155, 125, 120, 35);
-		this.add(btnBuscarTodos);
-		
+
 		btnExcluir = new JButton("Excluir");
 		btnExcluir.setEnabled(false);
 		btnExcluir.setBounds(475, 500, 200, 45);
 		btnExcluir.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				int opcaoSelecionada = JOptionPane.showConfirmDialog(null, "Confirma a exclusão do cliente selecionado?");
-				
-				if(opcaoSelecionada == JOptionPane.YES_OPTION) {
+				int opcaoSelecionada = JOptionPane.showConfirmDialog(null,
+						"Confirma a exclusão do cliente selecionado?");
+
+				if (opcaoSelecionada == JOptionPane.YES_OPTION) {
 					try {
 						controller.excluir(clienteSelecionado.getId());
 						JOptionPane.showMessageDialog(null, "Cliente excluído com sucesso");
@@ -209,9 +211,41 @@ public class PainelListagemCliente extends JPanel {
 			}
 		});
 		this.add(btnExcluir);
+
+		JButton btnVoltarPagina = new JButton("<< Voltar");
+		btnVoltarPagina.setEnabled(false);
+		btnVoltarPagina.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				paginaAtual--;
+				buscarClientesComFiltros();
+				lblPaginacao.setText(paginaAtual + " / " + totalPaginas);
+
+				btnVoltarPagina.setEnabled(paginaAtual > 1);
+			}
+		});
+		btnVoltarPagina.setBounds(145, 342, 104, 23);
+		add(btnVoltarPagina);
+
+		JButton btnAvancarPagina = new JButton("Avançar >>");
+		btnAvancarPagina.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				paginaAtual++;
+				buscarClientesComFiltros();
+				lblPaginacao.setText(paginaAtual + " /TOTAL");
+
+				btnVoltarPagina.setEnabled(paginaAtual > 1);
+				btnAvancarPagina.setEnabled(paginaAtual < totalPaginas);
+			}
+		});
+		btnAvancarPagina.setBounds(396, 342, 110, 23);
+		add(btnAvancarPagina);
+
+		lblPaginacao = new JLabel("Paginacao");
+		lblPaginacao.setBounds(295, 346, 77, 14);
+		add(lblPaginacao);
 	}
-	
-	//Torna o btnEditar acessível externamente à essa classe
+
+	// Torna o btnEditar acessível externamente à essa classe
 	public JButton getBtnEditar() {
 		return this.btnEditar;
 	}
@@ -219,7 +253,4 @@ public class PainelListagemCliente extends JPanel {
 	public ClienteVO getClienteSelecionado() {
 		return clienteSelecionado;
 	}
-		
-	
 }
-

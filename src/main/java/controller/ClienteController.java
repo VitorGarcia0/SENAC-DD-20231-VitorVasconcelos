@@ -1,5 +1,6 @@
 package controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import model.Exception.CampoInvalidoException;
@@ -8,6 +9,7 @@ import model.Exception.CpfAlteradoException;
 import model.Exception.CpfJaUtilizadoException;
 import model.Exception.EnderecoInvalidoException;
 import model.bo.ClienteBO;
+import model.seletor.ClienteSeletor;
 import model.vo.telefonia.ClienteVO;
 
 public class ClienteController {
@@ -80,6 +82,13 @@ public class ClienteController {
 	public boolean excluir(int id) throws ClienteComTelefoneException {
 		return bo.excluir(id);
 	}
+
+	public List<ClienteVO> consultarComFiltros(ClienteSeletor seletor) {
+		return bo.consultarComFiltros(seletor);
+	}
 	
+	public int contarTotalRegistros() {
+		return bo.contarTotalRegistros();
+	}
 	
 }
