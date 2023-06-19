@@ -35,4 +35,7 @@ CREATE TABLE `exemplos`.`endereco` (
     REFERENCES `exemplos`.`endereco` (`ID`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
+    
+    ALTER TABLE `exemplos`.`endereco` 
+CHANGE COLUMN `ESTADO` `ESTADO` VARCHAR(255) NOT NULL ;
 
